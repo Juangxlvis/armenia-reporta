@@ -55,6 +55,13 @@ class RegistroSerializer(serializers.ModelSerializer):
         return usuario
 
 
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ["id", "email", "nombre", "telefono", "rol", "creado_en"]
+        read_only_fields = ["id", "email", "rol", "creado_en"]
+
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()

@@ -12,6 +12,7 @@ from .serializers import (
     ConfirmarSerializer,
     LoginSerializer,
     LogoutSerializer,
+    PerfilSerializer,
     RecuperarSerializer,
     ReenviarSerializer,
     RegistroSerializer,
@@ -81,12 +82,12 @@ class LogoutView(APIView):
         return Response({"detail": "Sesión cerrada"})
 
 
-class PerfilView(APIView):
+class PerfilView(generics.RetrieveUpdateAPIView):
+    serializer_class = PerfilSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        usuario = request.user
-        return Response({"email": usuario.email, "nombre": usuario.nombre})
+    def get_object(self):
+        return self.request.user
 
 
 class ConfirmarView(APIView):
