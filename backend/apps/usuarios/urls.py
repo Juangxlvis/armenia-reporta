@@ -1,6 +1,14 @@
 from django.urls import path
 
-from .views import ConfirmarView, ReenviarView, RegistroView
+from .views import (
+    ConfirmarView,
+    LoginView,
+    LogoutView,
+    PerfilView,
+    ReenviarView,
+    RefreshView,
+    RegistroView,
+)
 
 urlpatterns = [
     path("registro/", RegistroView.as_view(), name="registro"),
@@ -10,4 +18,8 @@ urlpatterns = [
         ReenviarView.as_view(),
         name="reenviar-confirmacion",
     ),
+    path("login/", LoginView.as_view(), name="login"),
+    path("refresh/", RefreshView.as_view(), name="refresh"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("perfil/", PerfilView.as_view(), name="perfil"),
 ]

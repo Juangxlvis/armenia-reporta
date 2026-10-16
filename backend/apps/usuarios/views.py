@@ -1,16 +1,89 @@
 from django.utils import timezone
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .models import TokenUsuario, Usuario
-from .serializers import ConfirmarSerializer, ReenviarSerializer, RegistroSerializer
-from .services import _hash_token, crear_token, enviar_correo_confirmacion
+from .serializers import (
+    ConfirmarSerializer,
+    LoginSerializer,
+    LogoutSerializer,
+    ReenviarSerializer,
+    RegistroSerializer,
+)
+from .services import (
+    ResultadoLogin,
+    _hash_token,
+    crear_token,
+    enviar_correo_confirmacion,
+    iniciar_sesion,
+)
+
+RESPUESTAS_LOGIN = {
+    ResultadoLogin.BLOQUEADO: (
+        "Cuenta bloqueada temporalmente por intentos fallidos",
+        status.HTTP_403_FORBIDDEN,
+    ),
+    ResultadoLogin.CREDENCIALES_INVALIDAS: (
+        "Credenciales inválidas",
+        status.HTTP_401_UNAUTHORIZED,
+    ),
+    ResultadoLogin.NO_CONFIRMADO: (
+        "El correo no está confirmado",
+        status.HTTP_403_FORBIDDEN,
+    ),
+    ResultadoLogin.INACTIVO: (
+        "La cuenta está inactiva",
+        status.HTTP_403_FORBIDDEN,
+    ),
+}
 
 
 class RegistroView(generics.CreateAPIView):
     serializer_class = RegistroSerializer
+
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        resultado, usuario = iniciar_sesion(
+            serializer.validated_data["email"],
+            serializer.validated_data["password"],
+        )
+
+        if resultado is not ResultadoLogin.EXITO:
+            detalle, codigo = RESPUESTAS_LOGIN[resultado]
+            return Response({"detail": detalle}, status=codigo)
+
+        refresh = RefreshToken.for_user(usuario)
+        return Response({"refresh": str(refresh), "access": str(refresh.access_token)})
+
+
+class RefreshView(TokenRefreshView):
+    pass
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = LogoutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": "Sesión cerrada"})
+
+
+class PerfilView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        usuario = request.user
+        return Response({"email": usuario.email, "nombre": usuario.nombre})
 
 
 class ConfirmarView(APIView):

@@ -2,6 +2,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import TokenUsuario, Usuario
 from .services import crear_token, enviar_correo_confirmacion
@@ -51,6 +53,25 @@ class RegistroSerializer(serializers.ModelSerializer):
         token = crear_token(usuario, TokenUsuario.TIPO_CONFIRMACION)
         enviar_correo_confirmacion(usuario, token)
         return usuario
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        self.token = attrs["refresh"]
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError as exc:
+            raise serializers.ValidationError({"detail": "Token inválido"}) from exc
 
 
 class ConfirmarSerializer(serializers.Serializer):
