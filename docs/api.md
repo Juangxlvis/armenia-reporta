@@ -17,13 +17,16 @@ Base: `/api/`. Formato: JSON. Auth: JWT (Bearer). Roles: ciudadano, funcionario 
 |---|---|---|---|---|
 | POST | /api/auth/registro/ | público | Crear cuenta, aceptar tratamiento de datos (Ley 1581); envía correo de confirmación | HU-01 |
 | POST | /api/auth/confirmar/ | público | Confirmar el correo con el token recibido | HU-01 |
+| POST | /api/auth/reenviar-confirmacion/ | público | Reenviar el correo de confirmación si el token expiró o no llegó | HU-01 |
 | POST | /api/auth/login/ | público | Devuelve el JWT; bloqueo tras intentos fallidos | HU-02 |
-| POST | /api/auth/logout/ | autenticado | Cierra la sesión | HU-02 |
+| POST | /api/auth/logout/ | autenticado | Invalida el refresh token en el servidor (blacklist). El access expira solo | HU-02 |
 | POST | /api/auth/refresh/ | público | Renueva el token. **Pendiente**: falta definir cómo se renueva (ADR-006) | HU-02 |
 | POST | /api/auth/recuperar/ | público | Envía enlace de un solo uso que caduca en 15 minutos | HU-03 |
 | POST | /api/auth/restablecer/ | público | Fija la nueva contraseña con el token del enlace | HU-03 |
 | GET/PATCH | /api/auth/perfil/ | autenticado | Ver y editar datos básicos de contacto | HU-04 |
 | DELETE | /api/auth/perfil/ | autenticado | Eliminar cuenta y suprimir datos **(propuesta)** | — |
+
+> **Pendiente ADR-006:** confirmar si el refresh token se guarda en blacklist o el cierre es solo del lado cliente. Afecta a `simplejwt` con `token_blacklist`.
 
 ## Catálogos
 

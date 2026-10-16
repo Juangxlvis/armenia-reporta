@@ -50,6 +50,7 @@ Armenia Reporta es una plataforma web responsive para que ciudadanos de Armenia 
      * reportes        * mapa
      * apoyos          * estadísticas
      * catálogos       * administración
+     * correo (transversal)
               |
               +--> [PostgreSQL + PostGIS — Neon]   (datos)
               +--> [Almacenamiento S3 gratuito]    (fotos)
@@ -68,6 +69,7 @@ Las teselas del mapa llegan al navegador directamente desde OpenStreetMap; el re
 6. `estadisticas` — por categoría, por zona y tiempos de respuesta (HU-14, HU-15, HU-16).
 7. `administracion` — bandeja de moderación, asignación de responsables y gestión de usuarios y roles (HU-17, HU-19).
 8. `catalogos` — categorías y comunas (zonas).
+9. `correo` (transversal) — helper compartido que envía confirmación (HU-01), recuperación (HU-03) y radicado (HU-08). No es una app con modelos propios.
 
 ## 6. Despliegue
 

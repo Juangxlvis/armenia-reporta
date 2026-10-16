@@ -1,6 +1,6 @@
 # Backlog — Armenia Reporta
 
-Fuente de verdad: Jira, proyecto EAR, al 13 de octubre de 2026. Seis tareas con 18 historias de usuario como subtareas (semanas 2 a 4) y cinco tareas sin historias (semanas 5 y 6). Todas están en estado Backlog, con prioridad Medium y **sin estimación**: este backlog no usa puntos, MoSCoW ni épicas. Los sprints son las semanas de Jira.
+Fuente de verdad: Jira, proyecto EAR, al 13 de octubre de 2026. Seis tareas con 18 historias de usuario como subtareas (semanas 2 a 4) y cinco tareas sin historias (semanas 5 y 6). **Las historias están en estado Backlog con prioridad Medium y sin estimación**; las tareas de la Semana 1 ya están cerradas. Este backlog no usa puntos, MoSCoW ni épicas. Los sprints son las semanas de Jira.
 
 ## Semana 1 — tareas hechas
 
@@ -36,6 +36,8 @@ Fuente de verdad: Jira, proyecto EAR, al 13 de octubre de 2026. Seis tareas con 
 | EAR-16 | HU-09 Selector manual de ubicación en mapa interactivo | Pin arrastrable, coordenadas automáticas |
 | EAR-19 | HU-10 Mapa público de reportes | Filtros por categoría y estado, pines distintos, ventana de resumen |
 | — | HU-20 Listado y detalle de reportes **(propuesta, no está en Jira)** | Listado paginado con filtros y detalle con botón Apoyar. Sin responsable |
+
+> **Nota:** HU-13 no existe en Jira; por eso el backlog salta de HU-12 a HU-14.
 
 ### EAR-7 · apoyo a reportes y estados de seguimiento
 | Clave | Historia | Criterio clave | Responsable |

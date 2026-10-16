@@ -33,6 +33,7 @@ usuarios 1---N tokens_usuario
 | bloqueado_hasta | timestamp, nulo (HU-02) |
 | acepta_datos_en | timestamp, obligatorio (Ley 1581 de 2012) |
 | creado_en | timestamp |
+| actualizado_en | timestamp (opcional, para auditar cambios de perfil) |
 
 ### tokens_usuario
 | Campo | Restricción |
@@ -77,7 +78,7 @@ Son las comunas de Armenia (HU-15). La fuente de los polígonos está por defini
 | Campo | Restricción |
 |---|---|
 | id | PK |
-| folio | único; radicado generado al enviar (HU-08) |
+| folio | único; radicado generado al enviar (HU-08); formato sugerido: `AR-2026-000001` |
 | usuario_id | FK usuarios (nulo si se anonimiza, propuesta) |
 | categoria_id | FK, obligatoria (HU-06) |
 | estado_id | FK |
@@ -129,7 +130,7 @@ Solo inserción. Índice por (reporte_id, cambiado_en). Alimenta la línea de ti
 
 - `total_apoyos` se mantiene sincronizado con `apoyos` dentro de la misma transacción.
 - Propuesta (no está en Jira): si una persona pide suprimir sus datos (Ley 1581 de 2012), sus reportes se conservan con `usuario_id` nulo para no alterar las estadísticas.
-- Solo un funcionario o supervisor cambia el estado, con una justificación (EAR-9, HU-18).
+- Solo un funcionario o administrador cambia el estado, con una justificación (EAR-9, HU-18).
 
 ## Datos iniciales
 
