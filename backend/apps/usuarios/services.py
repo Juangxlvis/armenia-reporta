@@ -42,6 +42,20 @@ def enviar_correo_confirmacion(usuario, token):
     )
 
 
+def enviar_correo_recuperacion(usuario, token):
+    enlace = f"{settings.FRONTEND_URL}/auth/restablecer?token={token}"
+    mensaje = (
+        f"Hola {usuario.nombre or usuario.email},\n\n"
+        f"Restablece tu contraseña de Armenia Reporta: {enlace}"
+    )
+    send_mail(
+        subject="Restablece tu contraseña en Armenia Reporta",
+        message=mensaje,
+        from_email=None,
+        recipient_list=[usuario.email],
+    )
+
+
 def usuario_bloqueado(usuario):
     return (
         usuario.bloqueado_hasta is not None and usuario.bloqueado_hasta > timezone.now()

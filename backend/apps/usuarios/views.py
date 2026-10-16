@@ -12,14 +12,17 @@ from .serializers import (
     ConfirmarSerializer,
     LoginSerializer,
     LogoutSerializer,
+    RecuperarSerializer,
     ReenviarSerializer,
     RegistroSerializer,
+    RestablecerSerializer,
 )
 from .services import (
     ResultadoLogin,
     _hash_token,
     crear_token,
     enviar_correo_confirmacion,
+    enviar_correo_recuperacion,
     iniciar_sesion,
 )
 
@@ -131,3 +134,25 @@ class ReenviarView(APIView):
         token = crear_token(usuario, TokenUsuario.TIPO_CONFIRMACION)
         enviar_correo_confirmacion(usuario, token)
         return Response({"detail": "Se envió un nuevo enlace de confirmación"})
+
+
+class RecuperarView(APIView):
+    def post(self, request):
+        serializer = RecuperarSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        usuario = Usuario.objects.filter(email__iexact=email).first()
+
+        if usuario is not None and usuario.correo_confirmado:
+            token = crear_token(usuario, TokenUsuario.TIPO_RECUPERACION)
+            enviar_correo_recuperacion(usuario, token)
+
+        return Response({"detail": "Si el correo está registrado, recibirás un enlace"})
+
+
+class RestablecerView(APIView):
+    def post(self, request):
+        serializer = RestablecerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": "Contraseña restablecida"})

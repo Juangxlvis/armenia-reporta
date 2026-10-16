@@ -6,7 +6,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import TokenUsuario, Usuario
-from .services import crear_token, enviar_correo_confirmacion
+from .services import _hash_token, crear_token, enviar_correo_confirmacion
 
 
 class RegistroSerializer(serializers.ModelSerializer):
@@ -80,3 +80,44 @@ class ConfirmarSerializer(serializers.Serializer):
 
 class ReenviarSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class RecuperarSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class RestablecerSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate_token(self, value):
+        token_hash = _hash_token(value)
+        try:
+            token_db = TokenUsuario.objects.get(
+                token=token_hash, tipo=TokenUsuario.TIPO_RECUPERACION
+            )
+        except TokenUsuario.DoesNotExist:
+            raise serializers.ValidationError("Token inválido")
+        if token_db.usado_en is not None:
+            raise serializers.ValidationError("El token ya fue usado")
+        if token_db.expira_en < timezone.now():
+            raise serializers.ValidationError("El token ha expirado")
+        self.token_db = token_db
+        return value
+
+    def validate_password(self, value):
+        token_db = getattr(self, "token_db", None)
+        usuario = token_db.usuario if token_db is not None else None
+        try:
+            validate_password(value, user=usuario)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(list(exc.messages))
+        return value
+
+    def save(self, **kwargs):
+        usuario = self.token_db.usuario
+        usuario.set_password(self.validated_data["password"])
+        usuario.save()
+        self.token_db.usado_en = timezone.now()
+        self.token_db.save()
+        return usuario
