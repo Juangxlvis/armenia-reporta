@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils.module_loading import import_string
+from storages.backends.s3 import S3Storage
 
 APPS_ESPERADAS = {
     "apps.usuarios",
@@ -24,3 +26,14 @@ def test_drf_y_simplejwt_instalados():
 def test_jwt_configurado():
     assert settings.SIMPLE_JWT["AUTH_HEADER_TYPES"] == ("Bearer",)
     assert settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds() > 0
+
+
+def test_storages_default_usa_s3():
+    default = settings.STORAGES["default"]
+    assert import_string(default["BACKEND"]) is S3Storage
+    assert default["OPTIONS"]["region_name"] == "auto"
+    assert default["OPTIONS"]["querystring_auth"] is False
+    assert default["OPTIONS"]["file_overwrite"] is False
+    assert settings.STORAGES["staticfiles"]["BACKEND"] == (
+        "django.contrib.staticfiles.storage.StaticFilesStorage"
+    )

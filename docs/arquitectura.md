@@ -26,7 +26,7 @@ Armenia Reporta es una plataforma web responsive para que ciudadanos de Armenia 
 | ADR-004 | PostgreSQL con extensión PostGIS, alojado en Neon | Decidido | Los reportes son datos geográficos; PostGIS da índice espacial y consultas por zona (mapa de calor, HU-15) | Descartados MySQL y SQLite. Verificar que Neon tenga PostGIS y que suspende el cómputo por inactividad |
 | ADR-005 | Mapa con Leaflet y teselas de OpenStreetMap: selector de ubicación (HU-09), mapa público (HU-10) y capa de calor (HU-15) | Propuesto | Gratuito y sin clave de API | Descartado Google Maps. Respetar la política de uso de las teselas de OSM |
 | ADR-006 | Autenticación con JWT de vida corta, bloqueo tras intentos fallidos (HU-02) y control de acceso por roles (HU-19) | Decidido | Desacopla el frontend (Vercel) de la API (Render) | Descartadas las sesiones de Django por depender de cookies entre dominios. Falta definir dónde se guarda el token y cómo se renueva |
-| ADR-007 | Fotos en almacenamiento compatible con S3 de capa gratuita; en la base solo se guarda la clave. Hasta 3 fotos JPG o PNG de 5 MB por reporte, con compresión automática (HU-07) | Propuesto | Los archivos no deben vivir en el disco de Render ni inflar la base | Candidatos: Cloudflare R2 y Supabase Storage (verificar límites vigentes). Descartado guardar la imagen en Postgres |
+| ADR-007 | Fotos en Cloudflare R2, almacenamiento compatible con S3 de capa gratuita; en la base solo se guarda la clave. Hasta 3 fotos JPG o PNG de 5 MB por reporte, con compresión automática (HU-07) | Decidido | Los archivos no deben vivir en el disco de Render ni inflar la base; R2 ofrece capa gratuita y fotos públicas sin costo de salida | Descartado Supabase Storage. Descartado guardar la imagen en Postgres. Verificar límites vigentes de la capa gratuita |
 | ADR-008 | Envío de correo con un servicio gratuito: confirmar cuenta (HU-01), recuperar contraseña con enlace de 15 minutos (HU-03) y confirmar el radicado (HU-08) | Propuesto | Tres historias de Jira lo exigen | Proveedor por elegir (D-07). Verificar límites de envío. Plan B: SMTP de una cuenta propia |
 | ADR-009 | Despliegue: Angular en Vercel, Django en Render y base de datos en Neon | Decidido | Capas gratuitas y despliegue desde el repositorio | Descartado por ahora Docker Compose en un VPS. Render gratuito suspende el servicio por inactividad; GeoDjango necesita GDAL y GEOS, por eso se despliega con imagen Docker |
 | ADR-010 | Panel administrativo propio en Angular sobre la API (HU-17, HU-18 y HU-19) | Propuesto | HU-17 pide bandeja con filtros, tabla paginada, ordenamiento y acciones rápidas | Descartado usar solo Django Admin como panel principal; puede servir para tareas internas. Cuesta más tiempo en la Semana 4 |
@@ -76,6 +76,6 @@ Las teselas del mapa llegan al navegador directamente desde OpenStreetMap; el re
 - Frontend: Vercel, root directory `frontend/`.
 - Backend: Render, imagen Docker con GDAL y GEOS (GeoDjango).
 - Base de datos: Neon con PostGIS habilitado.
-- Almacenamiento: Cloudflare R2 o Supabase Storage (por elegir y verificar).
+- Almacenamiento: Cloudflare R2 (compatible con S3, fotos públicas).
 - Correo: servicio gratuito por elegir (D-07).
 - Flujo (propuesta): `main` protegida y desplegable; despliegue automático desde el repositorio. CI con GitHub Actions no está en Jira.
