@@ -39,6 +39,14 @@ Base: `/api/`. Formato: JSON. Auth: JWT (Bearer). Roles: ciudadano, funcionario 
 
 ## Reportes
 
+> **HU-05 (implementado):** `POST /api/reportes/` recibe `titulo`, `descripcion`
+> (mínimo 20 caracteres), `categoria` (id de una categoría activa) y la
+> ubicación como `lat` y `lng` por separado; el backend las convierte a un
+> `Point` (SRID 4326). El `estado` inicial «Reportado», el `usuario` (del JWT) y
+> `total_apoyos=0` se asignan en el servidor y no son editables por el cliente.
+> Las fotos (HU-07), el folio y el correo de confirmación (HU-08) aún no se
+> implementan.
+
 | Método | Endpoint | Rol | Descripción | Historia |
 |---|---|---|---|---|
 | POST | /api/reportes/ | autenticado | Crear con título, descripción (mín. 20 caracteres), categoría, ubicación y hasta 3 fotos (JPG/PNG, 5 MB). Devuelve el folio y envía correo de confirmación | HU-05 a HU-09 |
