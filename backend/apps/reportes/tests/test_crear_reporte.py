@@ -59,6 +59,7 @@ def test_crear_reporte_exitoso(api_client, usuario, categoria, estado_reportado)
     assert reporte.estado.codigo == "reportado"
     assert reporte.total_apoyos == 0
     assert reporte.usuario == usuario
+    assert "folio" in resp.data
 
 
 @pytest.mark.django_db

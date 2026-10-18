@@ -6,7 +6,7 @@ from apps.usuarios.models import Usuario
 
 
 class Reporte(models.Model):
-    folio = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    folio = models.CharField(max_length=30, unique=True)
     usuario = models.ForeignKey(
         Usuario, on_delete=models.CASCADE, related_name="reportes"
     )

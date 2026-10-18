@@ -6,6 +6,7 @@ from apps.catalogos.models import Categoria
 from apps.estados.models import Estado
 
 from .models import FotoReporte, Reporte
+from .services import generar_folio
 from .utils import comprimir_foto, validar_foto
 
 DESCRIPCION_MINIMA = 20
@@ -40,6 +41,7 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
         model = Reporte
         fields = [
             "id",
+            "folio",
             "titulo",
             "descripcion",
             "categoria",
@@ -53,6 +55,7 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "folio",
             "usuario",
             "estado",
             "total_apoyos",
@@ -78,6 +81,7 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
         validated_data["ubicacion"] = Point(lng, lat, srid=4326)
         validated_data["estado"] = Estado.objects.get(codigo="reportado")
         validated_data["usuario"] = self.context["request"].user
+        validated_data["folio"] = generar_folio()
         reporte = super().create(validated_data)
         for orden, foto in enumerate(fotos):
             comprimida = comprimir_foto(foto)
