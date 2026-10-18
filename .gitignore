@@ -29,3 +29,6 @@ npm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+# Archivos temporales de debug
+error*.txt
+log_*.txt

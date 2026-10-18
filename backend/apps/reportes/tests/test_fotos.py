@@ -113,6 +113,28 @@ def test_crear_reporte_con_una_foto(api_client, usuario, categoria, estado_repor
     foto = reporte.fotos.get()
     assert default_storage.exists(foto.clave_almacenamiento)
 
+    fotos_respuesta = resp.data["fotos"]
+    assert len(fotos_respuesta) == 1
+    assert fotos_respuesta[0]["orden"] == 0
+    assert fotos_respuesta[0]["url"]
+
+
+@pytest.mark.django_db
+def test_crear_reporte_sin_fotos_responde_lista_vacia(
+    api_client, usuario, categoria, estado_reportado
+):
+    api_client.force_authenticate(user=usuario)
+    datos = {
+        "titulo": "Hueco en la vía principal",
+        "descripcion": "Hay un hueco grande que daña los carros todos los días.",
+        "categoria": categoria.id,
+        "lat": 4.5339,
+        "lng": -75.6811,
+    }
+    resp = api_client.post("/api/reportes/", datos, format="json")
+    assert resp.status_code == 201
+    assert resp.data["fotos"] == []
+
 
 @pytest.mark.django_db
 def test_crear_reporte_con_tres_fotos(api_client, usuario, categoria, estado_reportado):

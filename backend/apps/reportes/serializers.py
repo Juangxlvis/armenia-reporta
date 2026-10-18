@@ -11,6 +11,18 @@ from .utils import comprimir_foto, validar_foto
 DESCRIPCION_MINIMA = 20
 
 
+class FotoReporteSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FotoReporte
+        fields = ["id", "clave_almacenamiento", "orden", "url"]
+        read_only_fields = fields
+
+    def get_url(self, obj):
+        return default_storage.url(obj.clave_almacenamiento)
+
+
 class ReporteCreateSerializer(serializers.ModelSerializer):
     categoria = serializers.PrimaryKeyRelatedField(
         queryset=Categoria.objects.filter(activa=True)
@@ -76,3 +88,10 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
                 reporte=reporte, clave_almacenamiento=clave, orden=orden
             )
         return reporte
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["fotos"] = FotoReporteSerializer(
+            instance.fotos.all(), many=True, context=self.context
+        ).data
+        return data
