@@ -44,7 +44,12 @@ Base: `/api/`. Formato: JSON. Auth: JWT (Bearer). Roles: ciudadano, funcionario 
 > ubicación como `lat` y `lng` por separado; el backend las convierte a un
 > `Point` (SRID 4326). El `estado` inicial «Reportado», el `usuario` (del JWT) y
 > `total_apoyos=0` se asignan en el servidor y no son editables por el cliente.
-> Las fotos (HU-07), el folio y el correo de confirmación (HU-08) aún no se
+>
+> **HU-07 (implementado):** `POST /api/reportes/` acepta `multipart/form-data`
+> con el campo opcional `fotos` (lista de hasta 3 archivos JPG o PNG, 5 MB por
+> foto). Se comprimen automáticamente (redimensión a máx. 1920 px y JPEG
+> calidad 85; las PNG con transparencia se conservan en PNG). Sigue funcionando
+> con JSON sin fotos. El folio y el correo de confirmación (HU-08) aún no se
 > implementan.
 
 | Método | Endpoint | Rol | Descripción | Historia |

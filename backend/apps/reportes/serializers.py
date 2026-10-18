@@ -1,10 +1,12 @@
 from django.contrib.gis.geos import Point
+from django.core.files.storage import default_storage
 from rest_framework import serializers
 
 from apps.catalogos.models import Categoria
 from apps.estados.models import Estado
 
-from .models import Reporte
+from .models import FotoReporte, Reporte
+from .utils import comprimir_foto, validar_foto
 
 DESCRIPCION_MINIMA = 20
 
@@ -15,6 +17,12 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
     )
     lat = serializers.FloatField(write_only=True)
     lng = serializers.FloatField(write_only=True)
+    fotos = serializers.ListField(
+        child=serializers.ImageField(),
+        write_only=True,
+        required=False,
+        max_length=3,
+    )
 
     class Meta:
         model = Reporte
@@ -25,6 +33,7 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
             "categoria",
             "lat",
             "lng",
+            "fotos",
             "usuario",
             "estado",
             "total_apoyos",
@@ -45,10 +54,25 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_fotos(self, value):
+        for foto in value:
+            validar_foto(foto)
+        return value
+
     def create(self, validated_data):
+        fotos = validated_data.pop("fotos", [])
         lat = validated_data.pop("lat")
         lng = validated_data.pop("lng")
         validated_data["ubicacion"] = Point(lng, lat, srid=4326)
         validated_data["estado"] = Estado.objects.get(codigo="reportado")
         validated_data["usuario"] = self.context["request"].user
-        return super().create(validated_data)
+        reporte = super().create(validated_data)
+        for orden, foto in enumerate(fotos):
+            comprimida = comprimir_foto(foto)
+            clave = default_storage.save(
+                f"reportes/{reporte.id}/{comprimida.name}", comprimida
+            )
+            FotoReporte.objects.create(
+                reporte=reporte, clave_almacenamiento=clave, orden=orden
+            )
+        return reporte
