@@ -36,6 +36,16 @@ class Reporte(models.Model):
     def __str__(self):
         return self.titulo
 
+    def crear_historial_inicial(self):
+        from apps.estados.models import HistorialEstado
+
+        HistorialEstado.objects.create(
+            reporte=self,
+            estado_anterior=None,
+            estado_nuevo=self.estado,
+            cambiado_por=self.usuario,
+        )
+
 
 class FotoReporte(models.Model):
     reporte = models.ForeignKey(Reporte, on_delete=models.CASCADE, related_name="fotos")

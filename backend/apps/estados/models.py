@@ -13,3 +13,32 @@ class Estado(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class HistorialEstado(models.Model):
+    reporte = models.ForeignKey(
+        "reportes.Reporte", on_delete=models.CASCADE, related_name="historial"
+    )
+    estado_anterior = models.ForeignKey(
+        Estado, on_delete=models.PROTECT, null=True, blank=True, related_name="+"
+    )
+    estado_nuevo = models.ForeignKey(Estado, on_delete=models.PROTECT, related_name="+")
+    cambiado_por = models.ForeignKey(
+        "usuarios.Usuario",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+    comentario = models.TextField(blank=True)
+    cambiado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "historial de estado"
+        verbose_name_plural = "historial de estados"
+        indexes = [
+            models.Index(fields=["reporte", "cambiado_en"]),
+        ]
+
+    def __str__(self):
+        return f"{self.reporte_id} -> {self.estado_nuevo_id}"
