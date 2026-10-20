@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.dialog-titulo {
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+
+.dialog-estado-actual {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .dialog-etiqueta {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.9rem;
+  }
+}
+
+mat-dialog-content {
+  min-width: 320px;
+}

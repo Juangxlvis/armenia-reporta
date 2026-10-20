@@ -1,5 +1,6 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -28,11 +29,102 @@
 }
 
 .contenido {
-  min-height: calc(100vh - 64px);
+  flex: 1 0 auto;
+}
+
+/* ====== Footer ====== */
+.pie {
+  background: #0f172a;
+  color: #e2e8f0;
+  margin-top: auto;
+}
+
+.pie-contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 32px;
+}
+
+.pie-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+
+  mat-icon {
+    color: #818cf8;
+  }
+}
+
+.pie-universidad {
+  margin: 14px 0 0;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.pie-carrera {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.pie-titulo {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #818cf8;
+}
+
+.pie-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+  }
+}
+
+.pie-base {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  padding: 16px 24px;
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
 }
 
 @media (max-width: 599px) {
   .nav-text {
     display: none;
+  }
+}
+
+@media (max-width: 799px) {
+  .pie-contenido {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }

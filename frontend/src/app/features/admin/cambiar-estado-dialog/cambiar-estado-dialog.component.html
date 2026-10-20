@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Cambiar estado</h2>
+
+<mat-dialog-content>
+  <p class="dialog-titulo">{{ reporte.titulo }}</p>
+
+  <div class="dialog-estado-actual">
+    <span class="dialog-etiqueta">Estado actual</span>
+    <mat-chip [class]="estadoClase(reporte.estado_nombre)">{{ reporte.estado_nombre }}</mat-chip>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Nuevo estado</mat-label>
+    <mat-select [value]="siguiente?.id" [disabled]="!siguiente">
+      @if (siguiente) {
+        <mat-option [value]="siguiente.id">{{ siguiente.nombre }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Justificación</mat-label>
+    <textarea
+      matInput
+      rows="4"
+      placeholder="Explica el motivo del cambio de estado"
+      [ngModel]="comentario()"
+      (ngModelChange)="comentario.set($event)"
+    ></textarea>
+    <mat-hint>Campo obligatorio</mat-hint>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()" [disabled]="guardando()">Cancelar</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="confirmar()"
+    [disabled]="guardando() || !siguiente || !comentario().trim()"
+  >
+    @if (guardando()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      Actualizar estado
+    }
+  </button>
+</mat-dialog-actions>

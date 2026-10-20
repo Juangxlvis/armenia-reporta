@@ -85,6 +85,8 @@ def test_listar_reportes_como_funcionario_ok(
     assert resp.status_code == 200
     folios = [r["folio"] for r in resp.data]
     assert reporte.folio in folios
+    item = next(r for r in resp.data if r["folio"] == reporte.folio)
+    assert item["estado_id"] == estados["reportado"].id
 
 
 @pytest.mark.django_db

@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.encabezado {
+  margin-bottom: 24px;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.5rem;
+
+    mat-icon {
+      color: #3f51b5;
+    }
+  }
+}
+
+.subtitulo {
+  margin: 6px 0 0;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.estado-centrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 48px 24px;
+  color: rgba(0, 0, 0, 0.6);
+
+  .icono-error,
+  .icono-vacio {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #b0bec5;
+  }
+
+  .icono-error {
+    color: #f44336;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.tabla-card {
+  overflow: hidden;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  min-width: 760px;
+}
+
+.celda-titulo {
+  font-weight: 500;
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}

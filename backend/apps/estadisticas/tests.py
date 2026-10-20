@@ -1,0 +1,66 @@
+import pytest
+from django.contrib.gis.geos import Point
+from rest_framework.test import APIClient
+
+from apps.catalogos.models import Categoria
+from apps.estados.models import Estado
+from apps.reportes.models import Reporte
+from apps.reportes.services import generar_folio
+from apps.usuarios.models import Usuario
+
+PASSWORD = "Segura123!"
+
+
+def crear_reporte(usuario, categoria, estado):
+    return Reporte.objects.create(
+        folio=generar_folio(),
+        usuario=usuario,
+        categoria=categoria,
+        estado=estado,
+        titulo="Hueco en la vía",
+        descripcion="Descripción válida con más de veinte caracteres para reportar.",
+        ubicacion=Point(-75.6811, 4.5339, srid=4326),
+    )
+
+
+@pytest.mark.django_db
+def test_resumen_publico_devuelve_conteos():
+    reportado = Estado.objects.create(
+        id=1, codigo="reportado", nombre="Reportado", orden=1, es_final=False
+    )
+    en_revision = Estado.objects.create(
+        id=2, codigo="en_revision", nombre="En revisión", orden=2, es_final=False
+    )
+    en_proceso = Estado.objects.create(
+        id=3, codigo="en_proceso", nombre="En proceso", orden=3, es_final=False
+    )
+    solucionado = Estado.objects.create(
+        id=4, codigo="solucionado", nombre="Solucionado", orden=4, es_final=True
+    )
+    categoria = Categoria.objects.create(nombre="vías", activa=True)
+
+    ciudadano = Usuario.objects.create_user(
+        email="ciudadano@example.com",
+        password=PASSWORD,
+        rol=Usuario.ROL_CIUDADANO,
+    )
+    Usuario.objects.create_user(
+        email="funcionario@example.com",
+        password=PASSWORD,
+        rol=Usuario.ROL_FUNCIONARIO,
+    )
+
+    crear_reporte(ciudadano, categoria, reportado)
+    crear_reporte(ciudadano, categoria, en_revision)
+    crear_reporte(ciudadano, categoria, en_proceso)
+    crear_reporte(ciudadano, categoria, solucionado)
+
+    resp = APIClient().get("/api/estadisticas/resumen/")
+
+    assert resp.status_code == 200
+    assert resp.data == {
+        "total_reportes": 4,
+        "en_proceso": 2,
+        "resueltos": 1,
+        "ciudadanos": 1,
+    }

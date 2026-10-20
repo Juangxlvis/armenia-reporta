@@ -20,6 +20,49 @@
   </div>
 </section>
 
+<section class="estadisticas">
+  <div class="estadisticas-contenido">
+    <h2 class="seccion-titulo">La ciudad, en cifras</h2>
+    <p class="seccion-subtitulo">El impacto de la participación ciudadana en tiempo real.</p>
+
+    <div class="tarjetas-kpi">
+      @for (tarjeta of tarjetas(); track tarjeta.icono) {
+        <mat-card class="kpi" appearance="outlined">
+          <div class="kpi-icono" [attr.aria-hidden]="true">
+            <mat-icon>{{ tarjeta.icono }}</mat-icon>
+          </div>
+          <div class="kpi-cuerpo">
+            <span class="kpi-valor">{{ tarjeta.valor | number }}</span>
+            <span class="kpi-etiqueta">{{ tarjeta.etiqueta }}</span>
+          </div>
+        </mat-card>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="mapa-reciente">
+  <div class="mapa-reciente-contenido">
+    <h2 class="seccion-titulo">Reportes recientes</h2>
+    <p class="seccion-subtitulo">Un vistazo a los últimos reportes registrados en Armenia.</p>
+
+    <div class="mapa-mini-contenedor">
+      <div #mapaMini class="mapa-mini"></div>
+
+      @if (cargandoMapa()) {
+        <div class="mapa-overlay">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      } @else if (reportesRecientes().length === 0) {
+        <div class="mapa-overlay">
+          <mat-icon>location_off</mat-icon>
+          <p>Aún no hay reportes recientes.</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
 <section class="como-funciona">
   <h2>¿Cómo funciona?</h2>
   <p class="seccion-subtitulo">En tres pasos sencillos tú también puedes aportar.</p>

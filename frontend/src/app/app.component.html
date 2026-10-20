@@ -22,6 +22,13 @@
       <span class="nav-text">Mis reportes</span>
     </a>
 
+    @if (auth.usuario()?.rol === 'funcionario' || auth.usuario()?.rol === 'administrador') {
+      <a mat-button routerLink="/admin" routerLinkActive="active">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span class="nav-text">Panel Admin</span>
+      </a>
+    }
+
     <a mat-button routerLink="/perfil" routerLinkActive="active">
       <mat-icon>account_circle</mat-icon>
       <span class="nav-text">{{ auth.usuario()?.nombre || 'Perfil' }}</span>
@@ -47,3 +54,35 @@
 <main class="contenido">
   <router-outlet />
 </main>
+
+<footer class="pie">
+  <div class="pie-contenido">
+    <div class="pie-col pie-marca">
+      <div class="pie-logo">
+        <mat-icon>campaign</mat-icon>
+        <span>Armenia Reporta</span>
+      </div>
+      <p class="pie-universidad">Universidad del Quindío</p>
+      <p class="pie-carrera">Ingeniería de Sistemas y Computación</p>
+    </div>
+
+    <div class="pie-col">
+      <h4 class="pie-titulo">Legal</h4>
+      <ul class="pie-lista">
+        <li><a href="#">Política de tratamiento de datos</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+
+    <div class="pie-col">
+      <h4 class="pie-titulo">Ayuda</h4>
+      <ul class="pie-lista">
+        <li><a href="#">Manual de uso</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pie-base">
+    <p>&copy; {{ anio }} Armenia Reporta. Todos los derechos reservados.</p>
+  </div>
+</footer>

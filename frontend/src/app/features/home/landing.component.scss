@@ -69,6 +69,145 @@
   --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.6);
 }
 
+.seccion-titulo {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  color: #1a237e;
+}
+
+.seccion-subtitulo {
+  margin: 0 0 44px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* ====== Estadísticas (KPIs) ====== */
+.estadisticas {
+  background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.estadisticas-contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  box-sizing: border-box;
+}
+
+.tarjetas-kpi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 22px;
+  border-radius: 14px;
+  background: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(26, 35, 126, 0.14);
+  }
+}
+
+.kpi-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+  color: #ffffff;
+  flex: 0 0 auto;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.kpi-cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kpi-valor {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1f2937;
+}
+
+.kpi-etiqueta {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 2px;
+}
+
+/* ====== Mapa de reportes recientes ====== */
+.mapa-reciente {
+  background: #ffffff;
+}
+
+.mapa-reciente-contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  box-sizing: border-box;
+}
+
+.mapa-mini-contenedor {
+  position: relative;
+  height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: #eceff1;
+}
+
+.mapa-mini {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.mapa-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #b0bec5;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+/* ====== Cómo funciona ====== */
 .como-funciona {
   max-width: 1120px;
   margin: 0 auto;
@@ -81,12 +220,6 @@
   text-align: center;
   font-size: clamp(1.6rem, 3vw, 2.25rem);
   color: #1a237e;
-}
-
-.seccion-subtitulo {
-  margin: 0 0 44px;
-  text-align: center;
-  color: rgba(0, 0, 0, 0.6);
 }
 
 .tarjetas {
@@ -143,5 +276,25 @@
 
   .hero-acciones .btn-grande {
     width: 100%;
+  }
+
+  .tarjetas-kpi {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .kpi {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    padding: 20px 12px;
+  }
+
+  .kpi-valor {
+    font-size: 1.5rem;
+  }
+
+  .mapa-mini-contenedor {
+    height: 240px;
   }
 }

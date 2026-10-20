@@ -78,7 +78,7 @@ Base: `/api/`. Formato: JSON. Auth: JWT (Bearer). Roles: ciudadano, funcionario 
 
 | Método | Endpoint | Rol | Descripción | Historia |
 |---|---|---|---|---|
-| GET | /api/admin/reportes/ | funcionario, administrador | Bandeja paginada y ordenable. Filtros: fecha, estado, categoría, comuna | HU-17 |
+| GET | /api/admin/reportes/ | funcionario, administrador | Bandeja paginada y ordenable. Filtros: fecha, estado, categoría, comuna. Incluye `estado_id` | HU-17 |
 | PATCH | /api/admin/reportes/{id}/estado/ | funcionario, administrador | Pasa al siguiente estado permitido; la justificación es obligatoria y queda en el historial con usuario y fecha | HU-18 |
 | PATCH | /api/admin/reportes/{id}/responsable/ | funcionario, administrador | Asignar responsable | EAR-9 |
 | GET | /api/admin/usuarios/ | administrador | Listar usuarios y sus roles | HU-19 |
@@ -88,6 +88,7 @@ Base: `/api/`. Formato: JSON. Auth: JWT (Bearer). Roles: ciudadano, funcionario 
 
 | Método | Endpoint | Rol | Descripción | Historia |
 |---|---|---|---|---|
+| GET | /api/estadisticas/resumen/ | público | Totales para la landing: `total_reportes`, `en_proceso` (En revisión + En proceso), `resueltos` y `ciudadanos` | - |
 | GET | /api/estadisticas/por-categoria/ | autenticado | Cantidad de reportes por categoría | HU-14 |
 | GET | /api/estadisticas/por-zona/ | funcionario, administrador | Densidad por comuna para el mapa de calor. `?desde=&hasta=` | HU-15 |
 | GET | /api/estadisticas/tiempos/ | funcionario, administrador | Tiempo promedio de atención y resolución por categoría y comuna (de Reportado a Solucionado) | HU-16 |

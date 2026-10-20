@@ -1,0 +1,86 @@
+<div class="admin-page">
+  <div class="encabezado">
+    <h1>
+      <mat-icon>admin_panel_settings</mat-icon>
+      Panel de administración
+    </h1>
+    <p class="subtitulo">Gestiona los reportes ciudadanos y actualiza su estado.</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="estado-centrado">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando reportes…</p>
+    </div>
+  } @else if (error()) {
+    <div class="estado-centrado">
+      <mat-icon class="icono-error">error_outline</mat-icon>
+      <p>{{ error() }}</p>
+      <button mat-stroked-button color="primary" (click)="cargar()">
+        <mat-icon>refresh</mat-icon>
+        Reintentar
+      </button>
+    </div>
+  } @else if (dataSource.data.length === 0) {
+    <div class="estado-centrado">
+      <mat-icon class="icono-vacio">inbox</mat-icon>
+      <p>No hay reportes para gestionar.</p>
+    </div>
+  } @else {
+    <mat-card appearance="outlined" class="tabla-card">
+      <div class="tabla-contenedor">
+        <table mat-table [dataSource]="dataSource" class="tabla">
+          <ng-container matColumnDef="folio">
+            <th mat-header-cell *matHeaderCellDef>Folio</th>
+            <td mat-cell *matCellDef="let reporte">{{ reporte.folio }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="titulo">
+            <th mat-header-cell *matHeaderCellDef>Título</th>
+            <td mat-cell *matCellDef="let reporte" class="celda-titulo">{{ reporte.titulo }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="categoria">
+            <th mat-header-cell *matHeaderCellDef>Categoría</th>
+            <td mat-cell *matCellDef="let reporte">{{ reporte.categoria_nombre }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef>Usuario</th>
+            <td mat-cell *matCellDef="let reporte">{{ reporte.usuario_nombre }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let reporte">
+              <mat-chip [class]="estadoClase(reporte.estado_nombre)">{{ reporte.estado_nombre }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let reporte">{{ reporte.creado_en | date: 'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let reporte">
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="gestionar(reporte)"
+                [disabled]="estaSolucionado(reporte)"
+              >
+                <mat-icon>manage_accounts</mat-icon>
+                Gestionar
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        </table>
+      </div>
+    </mat-card>
+  }
+</div>

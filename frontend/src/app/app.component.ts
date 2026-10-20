@@ -23,6 +23,7 @@ import { AuthService } from './core/services/auth.service';
 export class AppComponent implements OnInit {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly anio = new Date().getFullYear();
 
   ngOnInit(): void {
     if (this.auth.estaAutenticado()) {
