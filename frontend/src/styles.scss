@@ -2,3 +2,138 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+:root {
+  --color-estado-reportado: #9e9e9e;
+  --color-estado-en-revision: #f9a825;
+  --color-estado-en-proceso: #1e88e5;
+  --color-estado-solucionado: #43a047;
+}
+
+.mat-mdc-chip.estado-reportado {
+  --mdc-chip-elevated-container-color: var(--color-estado-reportado);
+  --mdc-chip-label-text-color: #ffffff;
+}
+
+.mat-mdc-chip.estado-en-revision {
+  --mdc-chip-elevated-container-color: var(--color-estado-en-revision);
+  --mdc-chip-label-text-color: #ffffff;
+}
+
+.mat-mdc-chip.estado-en-proceso {
+  --mdc-chip-elevated-container-color: var(--color-estado-en-proceso);
+  --mdc-chip-label-text-color: #ffffff;
+}
+
+.mat-mdc-chip.estado-solucionado {
+  --mdc-chip-elevated-container-color: var(--color-estado-solucionado);
+  --mdc-chip-label-text-color: #ffffff;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #f5f6fa;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+
+  mat-card-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.w-full {
+  width: 100%;
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.875rem;
+}
+
+.auth-card mat-card-header {
+  margin-bottom: 8px;
+}
+
+.auth-icono {
+  vertical-align: middle;
+  margin-right: 6px;
+  color: #3f51b5;
+}
+
+.btn-enviar {
+  margin-top: 8px;
+}
+
+.btn-enviar mat-icon {
+  margin-right: 6px;
+}
+
+.spinner-boton {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* Pines y popup del mapa (Leaflet crea estos nodos fuera del componente) */
+.pin-contenedor {
+  background: transparent;
+  border: none;
+}
+
+.pin-estado {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+}
+
+.popup-reporte {
+  min-width: 160px;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+}
+
+.popup-meta {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.popup-detalle {
+  display: inline-block;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: #3f51b5;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &:hover {
+    background: #303f9f;
+  }
+}

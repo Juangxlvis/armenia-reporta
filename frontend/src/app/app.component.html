@@ -1,0 +1,49 @@
+<mat-toolbar color="primary" class="toolbar">
+  <a class="brand" routerLink="/" mat-button>
+    <mat-icon>campaign</mat-icon>
+    <span>Armenia Reporta</span>
+  </a>
+
+  <span class="spacer"></span>
+
+  <a mat-button routerLink="/mapa" routerLinkActive="active">
+    <mat-icon>map</mat-icon>
+    <span class="nav-text">Mapa de la ciudad</span>
+  </a>
+
+  @if (auth.estaAutenticado()) {
+    <a mat-button routerLink="/reportes/nuevo" routerLinkActive="active">
+      <mat-icon>add_circle</mat-icon>
+      <span class="nav-text">Nuevo reporte</span>
+    </a>
+
+    <a mat-button routerLink="/reportes/mios" routerLinkActive="active">
+      <mat-icon>folder_shared</mat-icon>
+      <span class="nav-text">Mis reportes</span>
+    </a>
+
+    <a mat-button routerLink="/perfil" routerLinkActive="active">
+      <mat-icon>account_circle</mat-icon>
+      <span class="nav-text">{{ auth.usuario()?.nombre || 'Perfil' }}</span>
+    </a>
+
+    <button mat-button (click)="salir()">
+      <mat-icon>logout</mat-icon>
+      <span class="nav-text">Salir</span>
+    </button>
+  } @else {
+    <a mat-button routerLink="/auth/login" routerLinkActive="active">
+      <mat-icon>login</mat-icon>
+      <span class="nav-text">Login</span>
+    </a>
+
+    <a mat-button routerLink="/auth/registro" routerLinkActive="active">
+      <mat-icon>person_add</mat-icon>
+      <span class="nav-text">Registro</span>
+    </a>
+  }
+</mat-toolbar>
+
+<main class="contenido">
+  <router-outlet />
+</main>

@@ -1,0 +1,204 @@
+<div class="mapa-grid">
+  <aside class="col-filtros">
+    <h2 class="col-titulo">Filtros</h2>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Buscar</mat-label>
+      <input
+        matInput
+        type="text"
+        placeholder="Palabra clave o dirección"
+        [ngModel]="busqueda()"
+        (ngModelChange)="busqueda.set($event)"
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Categoría</mat-label>
+      <mat-select [ngModel]="categoriaPendiente()" (ngModelChange)="categoriaPendiente.set($event)">
+        <mat-option [value]="0">Todas</mat-option>
+        @for (categoria of categorias(); track categoria.id) {
+          <mat-option [value]="categoria.id">{{ categoria.nombre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Estado</mat-label>
+      <mat-select [ngModel]="estadoPendiente()" (ngModelChange)="estadoPendiente.set($event)">
+        <mat-option value="todos">Todos</mat-option>
+        @for (estado of estados; track estado.nombre) {
+          <mat-option [value]="estado.nombre">{{ estado.nombre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Barrio o comuna</mat-label>
+      <mat-select disabled value="Próximamente">
+        <mat-option value="Próximamente">Próximamente</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button class="btn-aplicar" (click)="aplicarFiltros()">Aplicar filtros</button>
+    <button mat-stroked-button (click)="limpiarFiltros()">Limpiar</button>
+  </aside>
+
+  <section class="col-central">
+    <header class="mapa-header">
+      <h1 class="mapa-contador">{{ reportesFiltrados().length }} reportes encontrados</h1>
+
+      <mat-button-toggle-group
+        class="vista-toggle"
+        [value]="vista()"
+        (change)="cambiarVista($event)"
+        aria-label="Cambiar vista"
+      >
+        <mat-button-toggle value="mapa">Mapa</mat-button-toggle>
+        <mat-button-toggle value="lista">Lista</mat-button-toggle>
+      </mat-button-toggle-group>
+    </header>
+
+    <div class="mapa-contenedor" [class.oculto]="vista() === 'lista'">
+      <div #mapa class="mapa"></div>
+
+      <div class="leyenda">
+        <h4>Estado</h4>
+        @for (estado of estados; track estado.nombre) {
+          <div class="leyenda-item">
+            <span class="leyenda-punto" [style.background-color]="estado.color"></span>
+            <span>{{ estado.nombre }}</span>
+          </div>
+        }
+      </div>
+
+      <a class="btn-nuevo" mat-fab extended routerLink="/reportes/nuevo">
+        <mat-icon>add_location_alt</mat-icon>
+        Nuevo reporte
+      </a>
+
+      @if (cargando()) {
+        <div class="overlay">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Cargando reportes…</p>
+        </div>
+      } @else if (error()) {
+        <div class="overlay">
+          <mat-icon class="icono-error">error_outline</mat-icon>
+          <p>{{ error() }}</p>
+          <button mat-stroked-button color="primary" (click)="cargar()">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (vista() === 'lista') {
+      <div class="lista-central">
+        @for (reporte of reportesFiltrados(); track reporte.id) {
+          <mat-card
+            class="tarjeta"
+            appearance="outlined"
+            (click)="verDetalle(reporte.id)"
+            (keydown.enter)="verDetalle(reporte.id)"
+            tabindex="0"
+            role="link"
+          >
+            <div class="tarjeta-foto">
+              @if (fotoUrl(reporte); as url) {
+                <img [src]="url" alt="Foto del reporte {{ reporte.folio }}" />
+              } @else {
+                <div class="tarjeta-sin-foto">
+                  <mat-icon>photo_camera</mat-icon>
+                </div>
+              }
+            </div>
+            <mat-card-content>
+              <h3 class="tarjeta-titulo">{{ reporte.titulo }}</h3>
+              <mat-chip-set class="chips" aria-label="Categoría y estado">
+                <mat-chip class="chip-categoria">{{ reporte.categoria_nombre }}</mat-chip>
+                <mat-chip [class]="estadoClase(reporte.estado_nombre)">
+                  {{ reporte.estado_nombre }}
+                </mat-chip>
+              </mat-chip-set>
+              <div class="tarjeta-apoyos">
+                <mat-icon>thumb_up</mat-icon>
+                {{ reporte.total_apoyos }}
+                {{ reporte.total_apoyos === 1 ? 'apoyo' : 'apoyos' }}
+              </div>
+              <button
+                mat-stroked-button
+                color="primary"
+                class="w-full"
+                (click)="verDetalle(reporte.id); $event.stopPropagation()"
+              >
+                Ver detalle
+              </button>
+            </mat-card-content>
+          </mat-card>
+        } @empty {
+          <div class="estado-vacio">
+            <mat-icon>search_off</mat-icon>
+            <p>No hay reportes que coincidan con los filtros.</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <aside class="col-resultados">
+    <h2 class="col-titulo">Resultados</h2>
+
+    <div class="resultados-lista">
+      @for (reporte of reportesFiltrados(); track reporte.id) {
+        <mat-card
+          class="tarjeta"
+          appearance="outlined"
+          (click)="verDetalle(reporte.id)"
+          (keydown.enter)="verDetalle(reporte.id)"
+          tabindex="0"
+          role="link"
+        >
+          <div class="tarjeta-foto">
+            @if (fotoUrl(reporte); as url) {
+              <img [src]="url" alt="Foto del reporte {{ reporte.folio }}" />
+            } @else {
+              <div class="tarjeta-sin-foto">
+                <mat-icon>photo_camera</mat-icon>
+              </div>
+            }
+          </div>
+          <mat-card-content>
+            <h3 class="tarjeta-titulo">{{ reporte.titulo }}</h3>
+            <mat-chip-set class="chips" aria-label="Categoría y estado">
+              <mat-chip class="chip-categoria">{{ reporte.categoria_nombre }}</mat-chip>
+              <mat-chip [class]="estadoClase(reporte.estado_nombre)">
+                {{ reporte.estado_nombre }}
+              </mat-chip>
+            </mat-chip-set>
+            <div class="tarjeta-apoyos">
+              <mat-icon>thumb_up</mat-icon>
+              {{ reporte.total_apoyos }}
+              {{ reporte.total_apoyos === 1 ? 'apoyo' : 'apoyos' }}
+            </div>
+            <button
+              mat-stroked-button
+              color="primary"
+              class="w-full"
+              (click)="verDetalle(reporte.id); $event.stopPropagation()"
+            >
+              Ver detalle
+            </button>
+          </mat-card-content>
+        </mat-card>
+      } @empty {
+        <div class="estado-vacio">
+          <mat-icon>search_off</mat-icon>
+          <p>No hay reportes que coincidan con los filtros.</p>
+        </div>
+      }
+    </div>
+  </aside>
+</div>

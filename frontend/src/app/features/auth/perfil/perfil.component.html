@@ -1,0 +1,60 @@
+<div class="perfil-page">
+  <mat-card class="perfil-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="perfil-icono">account_circle</mat-icon>
+        Mi perfil
+      </mat-card-title>
+      <mat-card-subtitle>Actualiza tu información personal</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (cargando()) {
+        <div class="cargando">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Cargando tu perfil…</p>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput [value]="email()" disabled />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" />
+            @if (form.controls.nombre.touched && form.controls.nombre.hasError('required')) {
+              <mat-error>El nombre es obligatorio</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Teléfono</mat-label>
+            <input matInput type="tel" formControlName="telefono" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Rol</mat-label>
+            <input matInput [value]="rol()" readonly />
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="w-full btn-enviar"
+            [disabled]="guardando()"
+          >
+            @if (guardando()) {
+              <mat-spinner diameter="18" class="spinner-boton"></mat-spinner>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            <span>{{ guardando() ? 'Guardando…' : 'Guardar cambios' }}</span>
+          </button>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,145 @@
+<div class="reporte-page">
+  @if (folioCreado()) {
+    <mat-card class="reporte-card">
+      <mat-card-content>
+        <div class="exito">
+          <mat-icon color="primary">check_circle</mat-icon>
+          <h2>¡Reporte creado!</h2>
+          <p>Tu reporte fue registrado con el folio:</p>
+          <div class="folio">{{ folioCreado() }}</div>
+          <div class="exito-acciones">
+            <button mat-flat-button color="primary" (click)="crearOtro()">
+              <mat-icon>add</mat-icon>
+              Crear otro reporte
+            </button>
+            <button mat-stroked-button (click)="irAlInicio()">
+              <mat-icon>home</mat-icon>
+              Ir al inicio
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card class="reporte-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="titulo-icono">add_location_alt</mat-icon>
+          Nuevo reporte
+        </mat-card-title>
+        <mat-card-subtitle>Describe el problema que quieres reportar</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="enviar()">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Título</mat-label>
+            <input matInput formControlName="titulo" maxlength="100" />
+            @if (form.controls.titulo.touched && form.controls.titulo.hasError('required')) {
+              <mat-error>El título es obligatorio</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="w-full"
+            [class.desc-corta]="descripcionCorta"
+          >
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="descripcion" rows="5"></textarea>
+            <mat-hint align="end">{{ descripcionLongitud }} / {{ descripcionMaxima }}</mat-hint>
+            @if (form.controls.descripcion.touched && form.controls.descripcion.hasError('required')) {
+              <mat-error>La descripción es obligatoria</mat-error>
+            } @else if (form.controls.descripcion.touched && form.controls.descripcion.hasError('minlength')) {
+              <mat-error>La descripción debe tener mínimo 20 caracteres</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="categoria">
+              @for (categoria of categorias(); track categoria.id) {
+                <mat-option [value]="categoria.id">{{ categoria.nombre }}</mat-option>
+              }
+            </mat-select>
+            @if (categoriasCargando()) {
+              <mat-hint>Cargando categorías…</mat-hint>
+            }
+            @if (form.controls.categoria.touched && form.controls.categoria.hasError('required')) {
+              <mat-error>Selecciona una categoría</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="ubicacion">
+            <button
+              mat-stroked-button
+              type="button"
+              color="primary"
+              (click)="usarUbicacionActual()"
+            >
+              <mat-icon>my_location</mat-icon>
+              Usar mi ubicación actual
+            </button>
+
+            @if (lat() !== null && lng() !== null) {
+              <span class="ubicacion-coords">Lat {{ lat() }}, Lng {{ lng() }}</span>
+            }
+          </div>
+          @if (mensajeUbicacion()) {
+            <div class="ubicacion-mensaje">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ mensajeUbicacion() }}</span>
+            </div>
+          }
+
+          <div class="fotos">
+            <label class="foto-boton">
+              <mat-icon>add_a_photo</mat-icon>
+              <span>Añadir fotos (máx. 3)</span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                (change)="onSeleccionarFotos($event)"
+                hidden
+              />
+            </label>
+
+            @if (fotos().length > 0) {
+              <div class="fotos-previa">
+                @for (foto of fotos(); track foto.url; let i = $index) {
+                  <div class="foto">
+                    <img [src]="foto.url" alt="Foto seleccionada" />
+                    <button
+                      type="button"
+                      class="foto-quitar"
+                      (click)="quitarFoto(i)"
+                      aria-label="Eliminar foto"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="w-full btn-enviar"
+            [disabled]="cargando()"
+          >
+            @if (cargando()) {
+              <mat-spinner diameter="18" class="spinner-boton"></mat-spinner>
+            } @else {
+              <mat-icon>send</mat-icon>
+            }
+            <span>{{ cargando() ? 'Enviando…' : 'Enviar reporte' }}</span>
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

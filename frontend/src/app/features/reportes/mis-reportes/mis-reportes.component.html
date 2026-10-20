@@ -1,0 +1,83 @@
+<div class="mis-reportes-page">
+  <div class="encabezado">
+    <h1>
+      <mat-icon>folder_shared</mat-icon>
+      Mis reportes
+    </h1>
+    <p class="subtitulo">Los reportes que has registrado y su estado actual.</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="estado-centrado">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando tus reportes…</p>
+    </div>
+  } @else if (error()) {
+    <div class="estado-centrado">
+      <mat-icon class="icono-error">error_outline</mat-icon>
+      <p>{{ error() }}</p>
+      <button mat-stroked-button color="primary" (click)="cargar()">
+        <mat-icon>refresh</mat-icon>
+        Reintentar
+      </button>
+    </div>
+  } @else if (reportes().length === 0) {
+    <mat-card class="estado-centrado vacio">
+      <mat-card-content>
+        <mat-icon class="icono-vacio">inbox</mat-icon>
+        <h2>Aún no tienes reportes</h2>
+        <p>Registra tu primer reporte y haz seguimiento a su estado.</p>
+        <button mat-flat-button color="primary" (click)="crearReporte()">
+          <mat-icon>add_location_alt</mat-icon>
+          Crear mi primer reporte
+        </button>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="cuadricula">
+      @for (reporte of reportes(); track reporte.id) {
+        <mat-card
+          class="reporte-card"
+          appearance="outlined"
+          (click)="verDetalle(reporte.id)"
+          (keydown.enter)="verDetalle(reporte.id)"
+          tabindex="0"
+          role="link"
+        >
+          <div class="foto">
+            @if (fotoUrl(reporte); as url) {
+              <img [src]="url" alt="Foto del reporte {{ reporte.folio }}" />
+            } @else {
+              <div class="foto-placeholder">
+                <mat-icon>photo_camera</mat-icon>
+              </div>
+            }
+          </div>
+
+          <mat-card-content>
+            <h2 class="titulo">{{ reporte.titulo }}</h2>
+            <div class="folio">Folio {{ reporte.folio }}</div>
+
+            <mat-chip-set class="chips" aria-label="Categoría y estado">
+              <mat-chip class="chip-categoria">{{ reporte.categoria_nombre }}</mat-chip>
+              <mat-chip [class]="estadoClase(reporte.estado_nombre)">
+                {{ reporte.estado_nombre }}
+              </mat-chip>
+            </mat-chip-set>
+
+            <div class="meta">
+              <span class="meta-item">
+                <mat-icon>thumb_up</mat-icon>
+                {{ reporte.total_apoyos }} {{ reporte.total_apoyos === 1 ? 'apoyo' : 'apoyos' }}
+              </span>
+              <span class="meta-item">
+                <mat-icon>event</mat-icon>
+                {{ reporte.creado_en | date: 'dd/MM/yyyy' }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

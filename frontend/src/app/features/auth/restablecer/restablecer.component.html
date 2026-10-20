@@ -1,0 +1,57 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="auth-icono">password</mat-icon>
+        Restablecer contraseña
+      </mat-card-title>
+      <mat-card-subtitle>Elige una nueva contraseña</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (tokenInvalido()) {
+        <p class="aviso-error">
+          Enlace inválido: falta el token de recuperación.
+          <a routerLink="/auth/recuperar">Solicitar un nuevo enlace</a>.
+        </p>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="enviar()">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nueva contraseña</mat-label>
+            <input matInput type="password" formControlName="password" autocomplete="new-password" />
+            @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+              <mat-error>La contraseña es obligatoria</mat-error>
+            } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+              <mat-error>Mínimo 8 caracteres</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Confirmar contraseña</mat-label>
+            <input matInput type="password" formControlName="confirmarPassword" autocomplete="new-password" />
+            @if (form.controls.confirmarPassword.touched && form.controls.confirmarPassword.hasError('required')) {
+              <mat-error>Confirma tu contraseña</mat-error>
+            } @else if (form.controls.confirmarPassword.touched && form.hasError('noCoinciden')) {
+              <mat-error>Las contraseñas no coinciden</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="w-full btn-enviar"
+            [disabled]="cargando()"
+          >
+            @if (cargando()) {
+              <mat-spinner diameter="18" class="spinner-boton"></mat-spinner>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            <span>{{ cargando() ? 'Guardando…' : 'Guardar contraseña' }}</span>
+          </button>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

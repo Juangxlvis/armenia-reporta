@@ -1,0 +1,160 @@
+:host {
+  display: block;
+}
+
+.mis-reportes-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.encabezado {
+  margin-bottom: 24px;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.5rem;
+
+    mat-icon {
+      color: #3f51b5;
+    }
+  }
+}
+
+.subtitulo {
+  margin: 6px 0 0;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.cuadricula {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.reporte-card {
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #3f51b5;
+    outline-offset: 2px;
+  }
+}
+
+.foto {
+  width: 100%;
+  height: 180px;
+  background: #eceff1;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.foto-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #b0bec5;
+  }
+}
+
+.titulo {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.folio {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.55);
+  margin-bottom: 8px;
+}
+
+.chips {
+  margin-bottom: 12px;
+}
+
+.chip-categoria {
+  --mdc-chip-elevated-container-color: #e8eaf6;
+  --mdc-chip-label-text-color: #3f51b5;
+  font-size: 0.75rem;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.estado-centrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 48px 24px;
+  color: rgba(0, 0, 0, 0.6);
+
+  .icono-error,
+  .icono-vacio {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #b0bec5;
+  }
+
+  .icono-error {
+    color: #f44336;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.vacio {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}

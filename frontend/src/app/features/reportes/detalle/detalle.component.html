@@ -1,0 +1,162 @@
+<div class="detalle-page">
+  @if (reporte(); as reporte) {
+    <header class="encabezado">
+      <div class="encabezado-titulo">
+        <h1>{{ reporte.titulo }}</h1>
+        <div class="folio">Folio {{ reporte.folio }}</div>
+      </div>
+      <mat-chip-set class="chips" aria-label="Categoría y estado">
+        <mat-chip class="chip-categoria">{{ reporte.categoria.nombre }}</mat-chip>
+        <mat-chip [class]="estadoClase(reporte.estado.nombre)">
+          {{ reporte.estado.nombre }}
+        </mat-chip>
+      </mat-chip-set>
+    </header>
+
+    <div class="detalle-grid">
+      <section class="columna-izquierda">
+        @if (reporte.fotos.length > 0) {
+          <div class="galeria">
+            <img
+              class="galeria-principal"
+              [src]="reporte.fotos[fotoActiva()].url"
+              alt="Foto del reporte"
+            />
+            @if (reporte.fotos.length > 1) {
+              <div class="galeria-miniaturas">
+                @for (foto of reporte.fotos; track foto.id; let i = $index) {
+                  <button
+                    type="button"
+                    class="miniatura"
+                    [class.activa]="i === fotoActiva()"
+                    (click)="seleccionarFoto(i)"
+                    [attr.aria-label]="'Ver foto ' + (i + 1)"
+                  >
+                    <img [src]="foto.url" alt="Miniatura de la foto" />
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <mat-card class="panel" appearance="outlined">
+          <mat-card-content>
+            <h2 class="seccion-titulo">Descripción</h2>
+            <p class="descripcion">{{ reporte.descripcion }}</p>
+
+            <div class="coordenadas">
+              <mat-icon>location_on</mat-icon>
+              <span>Lat {{ reporte.lat }}, Lng {{ reporte.lng }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+          <mat-card-content>
+            <h2 class="seccion-titulo">Línea de tiempo</h2>
+
+            @if (historial().length === 0) {
+              <p class="timeline-vacia">Sin historial registrado.</p>
+            } @else {
+              <div class="timeline">
+                @for (entrada of historial(); track $index; let ultimo = $last) {
+                  <div class="timeline-item" [class.ultimo]="ultimo">
+                    <div
+                      class="timeline-punto"
+                      [class]="estadoClase(entrada.estado_nuevo_nombre)"
+                    ></div>
+                    <div class="timeline-contenido">
+                      <div class="timeline-estado">
+                        @if (entrada.estado_anterior_nombre) {
+                          <span class="estado-anterior">{{ entrada.estado_anterior_nombre }}</span>
+                          <mat-icon class="flecha">arrow_forward</mat-icon>
+                        }
+                        <strong>{{ entrada.estado_nuevo_nombre }}</strong>
+                      </div>
+                      <div class="timeline-fecha">
+                        {{ entrada.cambiado_en | date: 'dd/MM/yyyy HH:mm' }}
+                      </div>
+                      @if (entrada.comentario) {
+                        <p class="timeline-comentario">{{ entrada.comentario }}</p>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      </section>
+
+      <aside class="columna-derecha">
+        <mat-card class="panel-apoyos" appearance="outlined">
+          <mat-card-content>
+            <div class="apoyos-contador">
+              <mat-icon>thumb_up</mat-icon>
+              <span class="apoyos-numero">{{ reporte.total_apoyos }}</span>
+              <span class="apoyos-texto">
+                {{ reporte.total_apoyos === 1 ? 'apoyo' : 'apoyos' }}
+              </span>
+            </div>
+
+            @if (reporte.apoyado_por_mi) {
+              <p class="apoyado-mensaje">
+                <mat-icon>check_circle</mat-icon>
+                Ya apoyaste este reporte
+              </p>
+            }
+
+            <button
+              mat-flat-button
+              color="primary"
+              class="w-full"
+              [disabled]="!puedeApoyar() || apoyando()"
+              (click)="apoyar()"
+            >
+              @if (apoyando()) {
+                <mat-spinner diameter="18" class="spinner-boton"></mat-spinner>
+              } @else {
+                <mat-icon>thumb_up</mat-icon>
+              }
+              <span>
+                @if (!auth.estaAutenticado()) {
+                  Inicia sesión para apoyar
+                } @else if (reporte.apoyado_por_mi) {
+                  Ya lo apoyaste
+                } @else {
+                  Apoyar este reporte
+                }
+              </span>
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </aside>
+    </div>
+  } @else if (cargando()) {
+    <div class="estado-centrado">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando reporte…</p>
+    </div>
+  } @else if (noEncontrado()) {
+    <mat-card class="estado-centrado tarjeta-estado">
+      <mat-card-content>
+        <mat-icon class="icono-404">search_off</mat-icon>
+        <h2>Reporte no encontrado</h2>
+        <p>El reporte que buscas no existe o fue eliminado.</p>
+        <a mat-flat-button color="primary" routerLink="/">Volver al inicio</a>
+      </mat-card-content>
+    </mat-card>
+  } @else if (error()) {
+    <mat-card class="estado-centrado tarjeta-estado">
+      <mat-card-content>
+        <mat-icon class="icono-error">error_outline</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-stroked-button color="primary" (click)="cargar()">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

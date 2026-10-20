@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.utils import timezone
 
 from apps.catalogos.models import Categoria
 from apps.estados.models import Estado
@@ -44,6 +45,26 @@ class Reporte(models.Model):
             estado_anterior=None,
             estado_nuevo=self.estado,
             cambiado_por=self.usuario,
+        )
+
+    def avanzar_estado(self, nuevo_estado, cambiado_por, comentario):
+        from apps.estados.models import HistorialEstado
+
+        if nuevo_estado.orden != self.estado.orden + 1:
+            raise ValueError("Solo se permite avanzar al siguiente estado")
+
+        estado_anterior = self.estado
+        self.estado = nuevo_estado
+        if nuevo_estado.es_final:
+            self.resuelto_en = timezone.now()
+        self.save(update_fields=["estado", "resuelto_en", "actualizado_en"])
+
+        HistorialEstado.objects.create(
+            reporte=self,
+            estado_anterior=estado_anterior,
+            estado_nuevo=nuevo_estado,
+            cambiado_por=cambiado_por,
+            comentario=comentario,
         )
 
 
