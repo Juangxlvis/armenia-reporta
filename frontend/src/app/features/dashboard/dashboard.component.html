@@ -1,0 +1,92 @@
+<div class="dashboard-page">
+  <header class="encabezado">
+    <h1>
+      <mat-icon>bar_chart</mat-icon>
+      Estadísticas de Armenia Reporta
+    </h1>
+    <p class="subtitulo">{{ fechaHoy }}</p>
+  </header>
+
+  @if (error()) {
+    <div class="aviso-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ error() }}</span>
+      <button mat-stroked-button color="warn" (click)="cargar()">Reintentar</button>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="estado-centrado">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando estadísticas…</p>
+    </div>
+  } @else {
+    <section class="fila-tarjetas">
+      @for (tarjeta of tarjetas(); track tarjeta.etiqueta) {
+        <mat-card class="tarjeta-total" appearance="outlined">
+          <mat-card-content>
+            <div class="tarjeta-icono">
+              <mat-icon>{{ tarjeta.icono }}</mat-icon>
+            </div>
+            <div class="tarjeta-dato">
+              <span class="tarjeta-valor">{{ tarjeta.valor }}</span>
+              <span class="tarjeta-etiqueta">{{ tarjeta.etiqueta }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </section>
+
+    <div class="paneles">
+      <mat-card class="panel-categorias" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Reportes por categoría</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @if (filasCategorias().length === 0) {
+            <p class="vacio">No hay reportes registrados todavía.</p>
+          } @else {
+            <div class="lista-categorias">
+              @for (fila of filasCategorias(); track fila.nombre) {
+                <div class="fila-categoria">
+                  <div class="fila-cabecera">
+                    <span class="fila-nombre">{{ fila.nombre }}</span>
+                    <span class="fila-valores">
+                      <span class="fila-total">{{ fila.total }}</span>
+                      <span class="fila-porcentaje">{{ fila.porcentaje }}%</span>
+                    </span>
+                  </div>
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="fila.porcentaje"
+                  ></mat-progress-bar>
+                </div>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="panel-estados" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Resumen de estados</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (fila of filasEstados(); track fila.nombre) {
+            <div class="fila-estado">
+              <span class="punto" [style.background-color]="fila.color"></span>
+              <span class="estado-nombre">{{ fila.nombre }}</span>
+              <span class="estado-total">{{ fila.total }}</span>
+            </div>
+            <mat-progress-bar
+              class="barra-estado"
+              mode="determinate"
+              [value]="fila.porcentaje"
+            ></mat-progress-bar>
+          }
+          <p class="nota">Porcentaje respecto al total de reportes.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

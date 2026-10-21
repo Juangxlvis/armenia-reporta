@@ -96,7 +96,7 @@
     </div>
 
     @if (vista() === 'lista') {
-      <div class="lista-central">
+      <div class="grid-lista-central">
         @for (reporte of reportesFiltrados(); track reporte.id) {
           <mat-card
             class="tarjeta"
@@ -123,6 +123,10 @@
                   {{ reporte.estado_nombre }}
                 </mat-chip>
               </mat-chip-set>
+              <div class="tarjeta-fecha">
+                <mat-icon>calendar_today</mat-icon>
+                <span>{{ reporte.creado_en | date: 'dd/MM/yyyy' }}</span>
+              </div>
               <div class="tarjeta-apoyos">
                 <mat-icon>thumb_up</mat-icon>
                 {{ reporte.total_apoyos }}
@@ -178,6 +182,10 @@
                 {{ reporte.estado_nombre }}
               </mat-chip>
             </mat-chip-set>
+            <div class="tarjeta-fecha">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ reporte.creado_en | date: 'dd/MM/yyyy' }}</span>
+            </div>
             <div class="tarjeta-apoyos">
               <mat-icon>thumb_up</mat-icon>
               {{ reporte.total_apoyos }}

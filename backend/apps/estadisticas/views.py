@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,4 +23,21 @@ class ResumenEstadisticasView(APIView):
                 ).count(),
                 "ciudadanos": Usuario.objects.filter(rol=Usuario.ROL_CIUDADANO).count(),
             }
+        )
+
+
+class PorCategoriaEstadisticasView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        conteos = (
+            Reporte.objects.values("categoria__nombre")
+            .annotate(total=Count("id"))
+            .order_by("-total", "categoria__nombre")
+        )
+        return Response(
+            [
+                {"categoria_nombre": item["categoria__nombre"], "total": item["total"]}
+                for item in conteos
+            ]
         )

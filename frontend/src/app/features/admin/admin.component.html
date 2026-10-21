@@ -1,10 +1,16 @@
 <div class="admin-page">
   <div class="encabezado">
-    <h1>
-      <mat-icon>admin_panel_settings</mat-icon>
-      Panel de administración
-    </h1>
-    <p class="subtitulo">Gestiona los reportes ciudadanos y actualiza su estado.</p>
+    <div class="encabezado-texto">
+      <h1>
+        <mat-icon>admin_panel_settings</mat-icon>
+        Panel de administración
+      </h1>
+      <p class="subtitulo">Gestiona los reportes ciudadanos y actualiza su estado.</p>
+    </div>
+    <a mat-stroked-button color="primary" routerLink="/estadisticas" class="btn-estadisticas">
+      <mat-icon>bar_chart</mat-icon>
+      Ver Estadísticas
+    </a>
   </div>
 
   @if (cargando()) {

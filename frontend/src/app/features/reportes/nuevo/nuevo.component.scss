@@ -38,16 +38,46 @@
 }
 
 .ubicacion {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 4px 0;
+  margin: 8px 0;
+}
+
+.mapa-contenedor {
+  position: relative;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #eceff1;
+}
+
+.mapa-ubicacion {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.btn-centrar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 500;
+  background-color: #fff;
 }
 
 .ubicacion-coords {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.75rem;
   color: rgba(0, 0, 0, 0.5);
+  margin-top: 8px;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #3f51b5;
+  }
 }
 
 .ubicacion-mensaje {
@@ -69,19 +99,44 @@
   margin: 8px 0;
 }
 
-.foto-boton {
-  display: inline-flex;
+.dropzone {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 16px;
+  border: 2px dashed #9fa8da;
+  border-radius: 8px;
+  background: #fafbff;
   cursor: pointer;
-  color: #3f51b5;
-  font-size: 0.875rem;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 
   mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #3f51b5;
   }
+
+  &:hover,
+  &.arrastrando {
+    border-color: #3f51b5;
+    background: #eef0ff;
+  }
+}
+
+.dropzone-texto {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.dropzone-ayuda {
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .fotos-previa {

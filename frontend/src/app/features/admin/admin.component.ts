@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 
 import { AdminService, ReporteAdmin } from '../../core/services/admin.service';
 import { claseEstado } from '../../core/utils/estado-chip';
@@ -24,6 +25,7 @@ import { CambiarEstadoDialogComponent } from './cambiar-estado-dialog/cambiar-es
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
+    RouterLink,
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
