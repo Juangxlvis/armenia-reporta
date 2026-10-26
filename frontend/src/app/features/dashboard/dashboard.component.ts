@@ -1,13 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import {
   CategoriaConteo,
   EstadisticasService,
+  FiltroFechas,
   ResumenEstadisticas,
 } from '../../core/services/estadisticas.service';
 
@@ -35,8 +42,14 @@ interface FilaEstado {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
+    MatButtonModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
   ],
@@ -50,6 +63,11 @@ export class DashboardComponent implements OnInit {
   readonly categorias = signal<CategoriaConteo[]>([]);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
+
+  readonly desde = signal<Date | null>(null);
+  readonly hasta = signal<Date | null>(null);
+
+  private readonly fechas: FiltroFechas = {};
 
   readonly fechaHoy = new Date().toLocaleDateString('es-CO', {
     weekday: 'long',
@@ -123,19 +141,43 @@ export class DashboardComponent implements OnInit {
     this.cargar();
   }
 
+  aplicarFechas(): void {
+    this.fechas.desde = this.formatearFecha(this.desde());
+    this.fechas.hasta = this.formatearFecha(this.hasta());
+    this.cargar();
+  }
+
+  limpiarFechas(): void {
+    this.desde.set(null);
+    this.hasta.set(null);
+    this.fechas.desde = undefined;
+    this.fechas.hasta = undefined;
+    this.cargar();
+  }
+
   cargar(): void {
     this.cargando.set(true);
     this.error.set(null);
 
-    this.estadisticasService.resumen().subscribe({
+    this.estadisticasService.resumen(this.fechas).subscribe({
       next: (datos) => this.resumen.set(datos),
       error: () => this.error.set('No se pudieron cargar las estadísticas.'),
     });
 
-    this.estadisticasService.porCategoria().subscribe({
+    this.estadisticasService.porCategoria(this.fechas).subscribe({
       next: (lista) => this.categorias.set(lista),
       error: () => this.categorias.set([]),
       complete: () => this.cargando.set(false),
     });
+  }
+
+  private formatearFecha(fecha: Date | null): string | undefined {
+    if (!fecha) {
+      return undefined;
+    }
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
   }
 }

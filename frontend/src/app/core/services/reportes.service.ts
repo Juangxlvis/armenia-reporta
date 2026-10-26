@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ApiService } from './api.service';
+import { ApiService, QueryParams } from './api.service';
 
 export interface ReporteCreado {
   id: number;
@@ -85,8 +85,8 @@ export class ReportesService {
     return this.api.get<ReporteResumen[]>('/reportes/mios/');
   }
 
-  listarMapa(): Observable<ReporteMapa[]> {
-    return this.api.get<ReporteMapa[]>('/mapa/reportes/');
+  listarMapa(params?: QueryParams): Observable<ReporteMapa[]> {
+    return this.api.get<ReporteMapa[]>('/mapa/reportes/', params);
   }
 
   obtener(id: number): Observable<ReporteDetalle> {

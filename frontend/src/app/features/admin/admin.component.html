@@ -13,6 +13,57 @@
     </a>
   </div>
 
+  <mat-card appearance="outlined" class="filtros-card">
+    <div class="filtros">
+      <mat-form-field appearance="outline" class="filtro-busqueda">
+        <mat-label>Buscar</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Folio, título o descripción"
+          [ngModel]="busqueda()"
+          (ngModelChange)="onBuscar($event)"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select [value]="estado()" (selectionChange)="estado.set($event.value); cargar()">
+          <mat-option [value]="0">Todos</mat-option>
+          @for (estado of estados; track estado.id) {
+            <mat-option [value]="estado.id">{{ estado.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoría</mat-label>
+        <mat-select [value]="categoria()" (selectionChange)="categoria.set($event.value); cargar()">
+          <mat-option [value]="0">Todas</mat-option>
+          @for (categoria of categorias(); track categoria.id) {
+            <mat-option [value]="categoria.id">{{ categoria.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Zona</mat-label>
+        <mat-select [value]="zona()" (selectionChange)="zona.set($event.value); cargar()">
+          <mat-option [value]="0">Todas</mat-option>
+          @for (zona of zonas(); track zona.id) {
+            <mat-option [value]="zona.id">{{ zona.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" (click)="limpiarFiltros()">
+        <mat-icon>clear_all</mat-icon>
+        Limpiar
+      </button>
+    </div>
+  </mat-card>
+
   @if (cargando()) {
     <div class="estado-centrado">
       <mat-spinner diameter="40"></mat-spinner>
@@ -49,6 +100,11 @@
           <ng-container matColumnDef="categoria">
             <th mat-header-cell *matHeaderCellDef>Categoría</th>
             <td mat-cell *matCellDef="let reporte">{{ reporte.categoria_nombre }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="zona">
+            <th mat-header-cell *matHeaderCellDef>Zona</th>
+            <td mat-cell *matCellDef="let reporte">{{ reporte.zona_nombre ?? '—' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="usuario">

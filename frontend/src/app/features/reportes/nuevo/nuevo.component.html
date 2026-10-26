@@ -70,6 +70,15 @@
             }
           </mat-form-field>
 
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Zona / Comuna (opcional)</mat-label>
+            <mat-select formControlName="zona">
+              @for (zona of zonas(); track zona.id) {
+                <mat-option [value]="zona.id">{{ zona.nombre }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
           <div class="fotos">
             <div
               class="dropzone"

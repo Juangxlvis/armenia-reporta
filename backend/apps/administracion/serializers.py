@@ -8,6 +8,7 @@ class ReporteAdminSerializer(serializers.ModelSerializer):
     estado_id = serializers.IntegerField(read_only=True)
     estado_nombre = serializers.CharField(source="estado.nombre", read_only=True)
     usuario_nombre = serializers.SerializerMethodField()
+    zona_nombre = serializers.SerializerMethodField()
 
     class Meta:
         model = Reporte
@@ -19,8 +20,12 @@ class ReporteAdminSerializer(serializers.ModelSerializer):
             "estado_id",
             "estado_nombre",
             "usuario_nombre",
+            "zona_nombre",
             "creado_en",
         ]
 
     def get_usuario_nombre(self, obj):
         return obj.usuario.nombre or obj.usuario.email
+
+    def get_zona_nombre(self, obj):
+        return obj.zona.nombre if obj.zona else None

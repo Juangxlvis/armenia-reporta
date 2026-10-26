@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from django.utils import timezone
 
-from apps.catalogos.models import Categoria
+from apps.catalogos.models import Categoria, Zona
 from apps.estados.models import Estado
 from apps.usuarios.models import Usuario
 
@@ -16,6 +16,9 @@ class Reporte(models.Model):
     )
     estado = models.ForeignKey(
         Estado, on_delete=models.PROTECT, related_name="reportes"
+    )
+    zona = models.ForeignKey(
+        Zona, on_delete=models.PROTECT, null=True, blank=True, related_name="reportes"
     )
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()

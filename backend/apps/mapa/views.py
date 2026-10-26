@@ -17,12 +17,15 @@ class ReportesMapaView(generics.ListAPIView):
         )
         categoria = self.request.query_params.get("categoria")
         estado = self.request.query_params.get("estado")
+        zona = self.request.query_params.get("zona")
         bbox = self.request.query_params.get("bbox")
 
         if categoria:
             qs = qs.filter(categoria_id=categoria)
         if estado:
             qs = qs.filter(estado_id=estado)
+        if zona:
+            qs = qs.filter(zona_id=zona)
         if bbox:
             qs = qs.filter(ubicacion__bboverlaps=self._poligono_bbox(bbox))
         return qs[:500]

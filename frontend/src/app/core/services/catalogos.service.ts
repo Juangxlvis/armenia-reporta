@@ -8,11 +8,20 @@ export interface Categoria {
   nombre: string;
 }
 
+export interface Zona {
+  id: number;
+  nombre: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CatalogosService {
   private readonly api = inject(ApiService);
 
   listarCategorias(): Observable<Categoria[]> {
     return this.api.get<Categoria[]>('/categorias/');
+  }
+
+  listarZonas(): Observable<Zona[]> {
+    return this.api.get<Zona[]>('/zonas/');
   }
 }

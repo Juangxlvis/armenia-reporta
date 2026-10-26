@@ -2,7 +2,7 @@ from django.contrib.gis.geos import Point
 from django.core.files.storage import default_storage
 from rest_framework import serializers
 
-from apps.catalogos.models import Categoria
+from apps.catalogos.models import Categoria, Zona
 from apps.catalogos.serializers import CategoriaSerializer
 from apps.estados.models import Estado, HistorialEstado
 
@@ -29,6 +29,12 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
     categoria = serializers.PrimaryKeyRelatedField(
         queryset=Categoria.objects.filter(activa=True)
     )
+    zona_id = serializers.PrimaryKeyRelatedField(
+        queryset=Zona.objects.filter(activa=True),
+        source="zona",
+        required=False,
+        allow_null=True,
+    )
     lat = serializers.FloatField(write_only=True)
     lng = serializers.FloatField(write_only=True)
     fotos = serializers.ListField(
@@ -46,6 +52,7 @@ class ReporteCreateSerializer(serializers.ModelSerializer):
             "titulo",
             "descripcion",
             "categoria",
+            "zona_id",
             "lat",
             "lng",
             "fotos",

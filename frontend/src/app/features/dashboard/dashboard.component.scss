@@ -31,6 +31,25 @@
   text-transform: capitalize;
 }
 
+.filtros-fechas {
+  margin-bottom: 24px;
+
+  .filtros-fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+
+    mat-form-field {
+      flex: 0 1 180px;
+    }
+
+    button {
+      margin-bottom: 22px;
+    }
+  }
+}
+
 .aviso-error {
   display: flex;
   align-items: center;

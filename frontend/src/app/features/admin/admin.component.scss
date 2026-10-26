@@ -34,6 +34,31 @@
   flex: 0 0 auto;
 }
 
+.filtros-card {
+  margin-bottom: 16px;
+  padding: 8px 16px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+
+  .filtro-busqueda {
+    flex: 1 1 240px;
+    min-width: 200px;
+  }
+
+  mat-form-field {
+    flex: 0 1 200px;
+  }
+
+  button {
+    margin-bottom: 22px;
+  }
+}
+
 .subtitulo {
   margin: 6px 0 0;
   color: rgba(0, 0, 0, 0.6);

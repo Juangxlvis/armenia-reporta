@@ -1,5 +1,8 @@
 import pytest
+from datetime import timedelta
+
 from django.contrib.gis.geos import Point
+from django.utils import timezone
 from rest_framework.test import APIClient
 
 from apps.catalogos.models import Categoria
@@ -91,3 +94,54 @@ def test_por_categoria_publico_devuelve_conteos():
         {"categoria_nombre": "vías", "total": 2},
         {"categoria_nombre": "residuos", "total": 1},
     ]
+
+
+@pytest.mark.django_db
+def test_resumen_filtro_fechas():
+    reportado = Estado.objects.create(
+        id=1, codigo="reportado", nombre="Reportado", orden=1, es_final=False
+    )
+    categoria = Categoria.objects.create(nombre="vías", activa=True)
+    ciudadano = Usuario.objects.create_user(
+        email="ciudadano@example.com",
+        password=PASSWORD,
+        rol=Usuario.ROL_CIUDADANO,
+    )
+
+    viejo = crear_reporte(ciudadano, categoria, reportado)
+    crear_reporte(ciudadano, categoria, reportado)
+
+    Reporte.objects.filter(pk=viejo.pk).update(
+        creado_en=timezone.now() - timedelta(days=5000)
+    )
+
+    resp = APIClient().get("/api/estadisticas/resumen/", {"desde": "2024-01-01"})
+
+    assert resp.status_code == 200
+    assert resp.data["total_reportes"] == 1
+
+
+@pytest.mark.django_db
+def test_por_categoria_filtro_fechas():
+    reportado = Estado.objects.create(
+        id=1, codigo="reportado", nombre="Reportado", orden=1, es_final=False
+    )
+    categoria_vias = Categoria.objects.create(nombre="vías", activa=True)
+    categoria_residuos = Categoria.objects.create(nombre="residuos", activa=True)
+    ciudadano = Usuario.objects.create_user(
+        email="ciudadano@example.com",
+        password=PASSWORD,
+        rol=Usuario.ROL_CIUDADANO,
+    )
+
+    viejo = crear_reporte(ciudadano, categoria_vias, reportado)
+    crear_reporte(ciudadano, categoria_residuos, reportado)
+
+    Reporte.objects.filter(pk=viejo.pk).update(
+        creado_en=timezone.now() - timedelta(days=5000)
+    )
+
+    resp = APIClient().get("/api/estadisticas/por-categoria/", {"desde": "2024-01-01"})
+
+    assert resp.status_code == 200
+    assert resp.data == [{"categoria_nombre": "residuos", "total": 1}]

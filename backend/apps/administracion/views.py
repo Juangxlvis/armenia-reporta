@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
@@ -12,14 +13,43 @@ from apps.usuarios.permissions import IsFuncionarioOrAdmin
 from .serializers import ReporteAdminSerializer
 
 
+def _parametro_entero(valor):
+    try:
+        return int(valor)
+    except (TypeError, ValueError):
+        return None
+
+
 class ReporteAdminListView(generics.ListAPIView):
     serializer_class = ReporteAdminSerializer
     permission_classes = [IsFuncionarioOrAdmin]
 
     def get_queryset(self):
-        return Reporte.objects.select_related(
-            "categoria", "estado", "usuario"
+        queryset = Reporte.objects.select_related(
+            "categoria", "estado", "usuario", "zona"
         ).order_by("-creado_en")
+
+        search = (self.request.query_params.get("search") or "").strip()
+        if search:
+            queryset = queryset.filter(
+                Q(folio__icontains=search)
+                | Q(titulo__icontains=search)
+                | Q(descripcion__icontains=search)
+            )
+
+        estado = _parametro_entero(self.request.query_params.get("estado"))
+        if estado:
+            queryset = queryset.filter(estado_id=estado)
+
+        categoria = _parametro_entero(self.request.query_params.get("categoria"))
+        if categoria:
+            queryset = queryset.filter(categoria_id=categoria)
+
+        zona = _parametro_entero(self.request.query_params.get("zona"))
+        if zona:
+            queryset = queryset.filter(zona_id=zona)
+
+        return queryset
 
 
 class ReporteCambiarEstadoView(APIView):

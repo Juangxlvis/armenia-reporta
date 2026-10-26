@@ -24,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import * as L from 'leaflet';
 
-import { CatalogosService, Categoria } from '../../core/services/catalogos.service';
+import { CatalogosService, Categoria, Zona } from '../../core/services/catalogos.service';
 import { ReporteMapa, ReportesService } from '../../core/services/reportes.service';
 import { claseEstado } from '../../core/utils/estado-chip';
 
@@ -72,14 +72,17 @@ export class MapaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly reportes = signal<ReporteMapa[]>([]);
   readonly categorias = signal<Categoria[]>([]);
+  readonly zonas = signal<Zona[]>([]);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
 
   readonly busqueda = signal('');
   readonly categoriaPendiente = signal<number>(0);
   readonly estadoPendiente = signal<string>('todos');
+  readonly zonaPendiente = signal<number>(0);
   readonly categoriaActiva = signal<number>(0);
   readonly estadoActiva = signal<string>('todos');
+  readonly zonaActiva = signal<number>(0);
   readonly vista = signal<Vista>('mapa');
 
   readonly estados = ESTADOS;
@@ -112,6 +115,16 @@ export class MapaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.catalogosService.listarCategorias().subscribe({
+      next: (categorias) => this.categorias.set(categorias),
+      error: () => this.categorias.set([]),
+    });
+
+    this.catalogosService.listarZonas().subscribe({
+      next: (zonas) => this.zonas.set(zonas),
+      error: () => this.zonas.set([]),
+    });
+
     this.cargar();
   }
 
@@ -130,7 +143,9 @@ export class MapaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cargando.set(true);
     this.error.set(null);
 
-    this.reportesService.listarMapa().subscribe({
+    const zona = this.zonaActiva() || undefined;
+
+    this.reportesService.listarMapa(zona ? { zona } : undefined).subscribe({
       next: (lista) => {
         this.reportes.set(lista);
         this.cargando.set(false);
@@ -140,24 +155,24 @@ export class MapaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cargando.set(false);
       },
     });
-
-    this.catalogosService.listarCategorias().subscribe({
-      next: (categorias) => this.categorias.set(categorias),
-      error: () => this.categorias.set([]),
-    });
   }
 
   aplicarFiltros(): void {
     this.categoriaActiva.set(this.categoriaPendiente());
     this.estadoActiva.set(this.estadoPendiente());
+    this.zonaActiva.set(this.zonaPendiente());
+    this.cargar();
   }
 
   limpiarFiltros(): void {
     this.busqueda.set('');
     this.categoriaPendiente.set(0);
     this.estadoPendiente.set('todos');
+    this.zonaPendiente.set(0);
     this.categoriaActiva.set(0);
     this.estadoActiva.set('todos');
+    this.zonaActiva.set(0);
+    this.cargar();
   }
 
   cambiarVista(evento: MatButtonToggleChange): void {

@@ -69,10 +69,11 @@ Son 4 estados.
 | Campo | Restricción |
 |---|---|
 | id | PK |
-| nombre | |
-| geometría | MultiPolygon, SRID 4326, índice GIST |
+| nombre | único |
+| activa | boolean (se desactivan, no se borran) |
+| geometría | MultiPolygon, SRID 4326, índice GIST (pendiente, D-05) |
 
-Son las comunas de Armenia (HU-15). La fuente de los polígonos está por definir (D-05).
+Son las 10 comunas de Armenia (HU-15). La fuente de los polígonos está por definir (D-05).
 
 ### reportes
 | Campo | Restricción |
@@ -82,7 +83,7 @@ Son las comunas de Armenia (HU-15). La fuente de los polígonos está por defini
 | usuario_id | FK usuarios (nulo si se anonimiza, propuesta) |
 | categoria_id | FK, obligatoria (HU-06) |
 | estado_id | FK |
-| zona_id | FK |
+| zona_id | FK, nulo hasta que se asigne (D-05) |
 | responsable_id | FK usuarios, nulo hasta que un funcionario lo asigna (EAR-9) |
 | título | |
 | descripción | mínimo 20 caracteres (HU-05) |

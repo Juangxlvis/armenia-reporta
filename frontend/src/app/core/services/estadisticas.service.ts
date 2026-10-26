@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ApiService } from './api.service';
+import { ApiService, QueryParams } from './api.service';
 
 export interface ResumenEstadisticas {
   total_reportes: number;
@@ -15,15 +15,20 @@ export interface CategoriaConteo {
   total: number;
 }
 
+export interface FiltroFechas {
+  desde?: string;
+  hasta?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class EstadisticasService {
   private readonly api = inject(ApiService);
 
-  resumen(): Observable<ResumenEstadisticas> {
-    return this.api.get<ResumenEstadisticas>('/estadisticas/resumen/');
+  resumen(fechas?: FiltroFechas): Observable<ResumenEstadisticas> {
+    return this.api.get<ResumenEstadisticas>('/estadisticas/resumen/', fechas as QueryParams);
   }
 
-  porCategoria(): Observable<CategoriaConteo[]> {
-    return this.api.get<CategoriaConteo[]>('/estadisticas/por-categoria/');
+  porCategoria(fechas?: FiltroFechas): Observable<CategoriaConteo[]> {
+    return this.api.get<CategoriaConteo[]>('/estadisticas/por-categoria/', fechas as QueryParams);
   }
 }

@@ -11,3 +11,15 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class Zona(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    activa = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "zona"
+        verbose_name_plural = "zonas"
+
+    def __str__(self):
+        return self.nombre

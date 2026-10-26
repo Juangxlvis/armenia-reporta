@@ -2,7 +2,7 @@ import pytest
 from django.contrib.gis.geos import Point
 from rest_framework.test import APIClient
 
-from apps.catalogos.models import Categoria
+from apps.catalogos.models import Categoria, Zona
 from apps.estados.models import Estado, HistorialEstado
 from apps.reportes.models import Reporte
 from apps.reportes.services import generar_folio
@@ -97,6 +97,107 @@ def test_listar_reportes_como_ciudadano_falla(
     api_client.force_authenticate(user=ciudadano)
     resp = api_client.get("/api/admin/reportes/")
     assert resp.status_code == 403
+
+
+@pytest.mark.django_db
+def test_listar_reportes_filtro_busqueda(
+    api_client, funcionario, ciudadano, categoria, estados
+):
+    reporte = crear_reporte(ciudadano, categoria, estados["reportado"])
+    otro = Reporte.objects.create(
+        folio=generar_folio(),
+        usuario=ciudadano,
+        categoria=categoria,
+        estado=estados["reportado"],
+        titulo="Basura acumulada en el parque",
+        descripcion="Descripción válida con más de veinte caracteres para reportar.",
+        ubicacion=Point(-75.6811, 4.5339, srid=4326),
+    )
+
+    api_client.force_authenticate(user=funcionario)
+    resp = api_client.get("/api/admin/reportes/", {"search": "basura"})
+
+    assert resp.status_code == 200
+    folios = [r["folio"] for r in resp.data]
+    assert otro.folio in folios
+    assert reporte.folio not in folios
+
+
+@pytest.mark.django_db
+def test_listar_reportes_filtro_estado(
+    api_client, funcionario, ciudadano, categoria, estados
+):
+    reporte = crear_reporte(ciudadano, categoria, estados["reportado"])
+    en_proceso = Reporte.objects.create(
+        folio=generar_folio(),
+        usuario=ciudadano,
+        categoria=categoria,
+        estado=estados["en_proceso"],
+        titulo="Hueco en la vía 2",
+        descripcion="Descripción válida con más de veinte caracteres para reportar.",
+        ubicacion=Point(-75.6811, 4.5339, srid=4326),
+    )
+
+    api_client.force_authenticate(user=funcionario)
+    resp = api_client.get(
+        "/api/admin/reportes/", {"estado": estados["en_proceso"].id}
+    )
+
+    assert resp.status_code == 200
+    folios = [r["folio"] for r in resp.data]
+    assert en_proceso.folio in folios
+    assert reporte.folio not in folios
+
+
+@pytest.mark.django_db
+def test_listar_reportes_filtro_categoria(
+    api_client, funcionario, ciudadano, categoria, estados
+):
+    otra_categoria = Categoria.objects.create(nombre="residuos", activa=True)
+    reporte = crear_reporte(ciudadano, categoria, estados["reportado"])
+    de_residuos = Reporte.objects.create(
+        folio=generar_folio(),
+        usuario=ciudadano,
+        categoria=otra_categoria,
+        estado=estados["reportado"],
+        titulo="Hueco en la vía 2",
+        descripcion="Descripción válida con más de veinte caracteres para reportar.",
+        ubicacion=Point(-75.6811, 4.5339, srid=4326),
+    )
+
+    api_client.force_authenticate(user=funcionario)
+    resp = api_client.get("/api/admin/reportes/", {"categoria": otra_categoria.id})
+
+    assert resp.status_code == 200
+    folios = [r["folio"] for r in resp.data]
+    assert de_residuos.folio in folios
+    assert reporte.folio not in folios
+
+
+@pytest.mark.django_db
+def test_listar_reportes_filtro_zona(
+    api_client, funcionario, ciudadano, categoria, estados
+):
+    zona = Zona.objects.create(nombre="Centenario", activa=True)
+    reporte = crear_reporte(ciudadano, categoria, estados["reportado"])
+    de_zona = Reporte.objects.create(
+        folio=generar_folio(),
+        usuario=ciudadano,
+        categoria=categoria,
+        estado=estados["reportado"],
+        zona=zona,
+        titulo="Hueco en la vía 2",
+        descripcion="Descripción válida con más de veinte caracteres para reportar.",
+        ubicacion=Point(-75.6811, 4.5339, srid=4326),
+    )
+
+    api_client.force_authenticate(user=funcionario)
+    resp = api_client.get("/api/admin/reportes/", {"zona": zona.id})
+
+    assert resp.status_code == 200
+    folios = [r["folio"] for r in resp.data]
+    assert de_zona.folio in folios
+    assert reporte.folio not in folios
 
 
 @pytest.mark.django_db

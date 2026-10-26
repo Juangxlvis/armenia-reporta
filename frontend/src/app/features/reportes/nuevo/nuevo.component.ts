@@ -21,7 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
-import { CatalogosService, Categoria } from '../../../core/services/catalogos.service';
+import { CatalogosService, Categoria, Zona } from '../../../core/services/catalogos.service';
 import { ReportesService } from '../../../core/services/reportes.service';
 
 const UBICACION_DEFECTO: [number, number] = [4.5338, -75.6811];
@@ -71,9 +71,11 @@ export class NuevoComponent implements OnInit, AfterViewInit, OnDestroy {
       [Validators.required, Validators.minLength(20), Validators.maxLength(DESCRIPCION_MAXIMA)],
     ],
     categoria: [null as number | null, [Validators.required]],
+    zona: [null as number | null],
   });
 
   readonly categorias = signal<Categoria[]>([]);
+  readonly zonas = signal<Zona[]>([]);
   readonly categoriasCargando = signal(false);
   readonly cargando = signal(false);
   readonly fotos = signal<FotoSeleccionada[]>([]);
@@ -107,6 +109,11 @@ export class NuevoComponent implements OnInit, AfterViewInit, OnDestroy {
           duration: 6000,
         });
       },
+    });
+
+    this.catalogos.listarZonas().subscribe({
+      next: (zonas) => this.zonas.set(zonas),
+      error: () => this.zonas.set([]),
     });
   }
 
@@ -186,12 +193,15 @@ export class NuevoComponent implements OnInit, AfterViewInit, OnDestroy {
     const lat = this.lat();
     const lng = this.lng();
 
-    const { titulo, descripcion, categoria } = this.form.getRawValue();
+    const { titulo, descripcion, categoria, zona } = this.form.getRawValue();
 
     const formData = new FormData();
     formData.append('titulo', titulo ?? '');
     formData.append('descripcion', descripcion ?? '');
     formData.append('categoria', String(categoria ?? ''));
+    if (zona !== null && zona !== undefined) {
+      formData.append('zona_id', String(zona));
+    }
     formData.append('lat', String(lat));
     formData.append('lng', String(lng));
     for (const foto of this.fotos()) {

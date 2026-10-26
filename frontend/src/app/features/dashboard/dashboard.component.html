@@ -7,6 +7,29 @@
     <p class="subtitulo">{{ fechaHoy }}</p>
   </header>
 
+  <mat-card appearance="outlined" class="filtros-fechas">
+    <mat-card-content>
+      <div class="filtros-fila">
+        <mat-form-field appearance="outline">
+          <mat-label>Desde</mat-label>
+          <input matInput [matDatepicker]="desdePicker" [ngModel]="desde()" (ngModelChange)="desde.set($event)" />
+          <mat-datepicker-toggle matIconSuffix [for]="desdePicker"></mat-datepicker-toggle>
+          <mat-datepicker #desdePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hasta</mat-label>
+          <input matInput [matDatepicker]="hastaPicker" [ngModel]="hasta()" (ngModelChange)="hasta.set($event)" />
+          <mat-datepicker-toggle matIconSuffix [for]="hastaPicker"></mat-datepicker-toggle>
+          <mat-datepicker #hastaPicker></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" (click)="aplicarFechas()">Aplicar</button>
+        <button mat-stroked-button (click)="limpiarFechas()">Limpiar</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
   @if (error()) {
     <div class="aviso-error" role="alert">
       <mat-icon>error_outline</mat-icon>
