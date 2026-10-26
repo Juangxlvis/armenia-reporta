@@ -54,3 +54,51 @@ class PorCategoriaEstadisticasView(APIView):
                 for item in conteos
             ]
         )
+
+
+class TiemposResolucionView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        reportes = _filtrar_por_fecha(
+            Reporte.objects.filter(
+                estado__codigo="solucionado", resuelto_en__isnull=False
+            ),
+            request,
+        ).select_related("categoria")
+
+        duraciones: dict[str, list[float]] = {}
+        for reporte in reportes:
+            dias = (reporte.resuelto_en - reporte.creado_en).total_seconds() / 86400
+            duraciones.setdefault(reporte.categoria.nombre, []).append(dias)
+
+        return Response(
+            [
+                {
+                    "categoria_nombre": nombre,
+                    "promedio_dias": round(sum(valores) / len(valores), 1),
+                }
+                for nombre, valores in sorted(duraciones.items())
+            ]
+        )
+
+
+class ZonasEstadisticasView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        conteos = (
+            _filtrar_por_fecha(Reporte.objects.filter(zona__isnull=False), request)
+            .values("zona__nombre")
+            .annotate(total=Count("id"))
+            .order_by("-total", "zona__nombre")
+        )
+        return Response(
+            [
+                {
+                    "zona_nombre": item["zona__nombre"],
+                    "total_reportes": item["total"],
+                }
+                for item in conteos
+            ]
+        )

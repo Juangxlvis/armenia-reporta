@@ -15,6 +15,11 @@ export interface CategoriaConteo {
   total: number;
 }
 
+export interface TiempoCategoria {
+  categoria_nombre: string;
+  promedio_dias: number;
+}
+
 export interface FiltroFechas {
   desde?: string;
   hasta?: string;
@@ -30,5 +35,9 @@ export class EstadisticasService {
 
   porCategoria(fechas?: FiltroFechas): Observable<CategoriaConteo[]> {
     return this.api.get<CategoriaConteo[]>('/estadisticas/por-categoria/', fechas as QueryParams);
+  }
+
+  tiempos(fechas?: FiltroFechas): Observable<TiempoCategoria[]> {
+    return this.api.get<TiempoCategoria[]>('/estadisticas/tiempos/', fechas as QueryParams);
   }
 }

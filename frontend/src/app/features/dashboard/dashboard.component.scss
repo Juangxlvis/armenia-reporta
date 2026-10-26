@@ -221,3 +221,59 @@
   font-size: 0.8rem;
   color: rgba(0, 0, 0, 0.55);
 }
+
+.paneles-secundarios {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .paneles-secundarios {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-tiempos,
+.panel-calor {
+  mat-card-header {
+    padding-bottom: 8px;
+  }
+}
+
+.tabla-tiempos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th,
+  td {
+    padding: 10px 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  th {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  td {
+    text-transform: capitalize;
+  }
+
+  .col-numero {
+    text-align: right;
+  }
+}
+
+.mapa-calor {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #eceff1;
+  z-index: 1;
+}

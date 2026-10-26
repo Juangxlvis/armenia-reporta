@@ -111,5 +111,45 @@
         </mat-card-content>
       </mat-card>
     </div>
+
+    <div class="paneles-secundarios">
+      <mat-card class="panel-tiempos" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Tiempo promedio de resolución</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @if (tiempos().length === 0) {
+            <p class="vacio">Aún no hay reportes solucionados.</p>
+          } @else {
+            <table class="tabla-tiempos">
+              <thead>
+                <tr>
+                  <th scope="col">Categoría</th>
+                  <th scope="col" class="col-numero">Días promedio</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of tiempos(); track item.categoria_nombre) {
+                  <tr>
+                    <td>{{ item.categoria_nombre }}</td>
+                    <td class="col-numero">{{ item.promedio_dias }} días</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="panel-calor" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Mapa de calor</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div #mapaCalor class="mapa-calor"></div>
+          <p class="nota">Densidad de reportes según el filtro de fechas.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
   }
 </div>
