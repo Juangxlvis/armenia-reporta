@@ -152,15 +152,15 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
-
-# Configuración de correo (dinámica para producción y desarrollo)
+# Configuración de correo con Brevo (API HTTP)
 EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
-EMAIL_HOST = config("EMAIL_HOST", default="")
-EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="Armenia Reporta <webmaster@localhost>")
+
+if EMAIL_BACKEND == "anymail.backends.brevo.EmailBackend":
+    ANYMAIL = {
+        "BREVO_API_KEY": config("BREVO_API_KEY", default=""),
+    }
+
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="Armenia Reporta <no-reply@armeniareporta.com>")
 
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default="")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default="")
