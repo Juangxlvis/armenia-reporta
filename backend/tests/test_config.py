@@ -35,5 +35,5 @@ def test_storages_default_usa_s3():
     assert default["OPTIONS"]["querystring_auth"] is False
     assert default["OPTIONS"]["file_overwrite"] is False
     assert settings.STORAGES["staticfiles"]["BACKEND"] == (
-        "django.contrib.staticfiles.storage.StaticFilesStorage"
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
     )
