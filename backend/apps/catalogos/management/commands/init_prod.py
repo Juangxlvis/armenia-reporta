@@ -28,7 +28,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('✓ Estados creados/verificados.'))
 
         # 3. Crear Zonas (Comunas de Armenia)
-        zonas = ['Centenario', 'Rufino José Cuervo', 'Alfonso López', 'Francisco de Paula Santander', 
+        zonas = ['Centenario', 'Rufino José Cuervo', 'Alfonso López', 'Francisco de Paula Santander',
                  'El Bosque', 'San José', 'Cafetero', 'Libertadores', 'Fundadores', 'Quimbaya']
         for nombre in zonas:
             Zona.objects.get_or_create(nombre=nombre)
@@ -38,7 +38,7 @@ class Command(BaseCommand):
         User = get_user_model()
         email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
         password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
-        
+
         if email and password:
             if not User.objects.filter(email=email).exists():
                 User.objects.create_superuser(email=email, nombre='Admin', password=password)
@@ -47,5 +47,5 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f'El superusuario {email} ya existe.'))
         else:
             self.stdout.write(self.style.WARNING('⚠ No se configuraron las variables DJANGO_SUPERUSER_EMAIL y DJANGO_SUPERUSER_PASSWORD.'))
-        
+
         self.stdout.write(self.style.SUCCESS('¡Inicialización completada!'))

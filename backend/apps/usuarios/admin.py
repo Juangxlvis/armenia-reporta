@@ -8,7 +8,7 @@ class UsuarioAdmin(UserAdmin):
     list_filter = ('rol', 'activo', 'correo_confirmado')
     search_fields = ('email', 'nombre')
     ordering = ('email',)
-    
+
     # Ajustamos los fieldsets para nuestro modelo personalizado
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
